@@ -1,0 +1,8 @@
+lora_init.c:102:6:SX1272IoInit	32	static
+lora_init.c:122:6:SX1272IoIrqInit	16	static
+lora_init.c:133:6:SX1272IoDeInit	32	static
+lora_init.c:148:6:SX1272SetRfTxPower	32	static
+lora_init.c:209:9:SX1272GetPaSelect	16	static
+lora_init.c:282:6:SX1272SetAntSwLowPower	16	static
+lora_init.c:287:6:SX1272SetAntSw	16	static
+lora_init.c:330:6:SX1272CheckRfFrequency	16	static
