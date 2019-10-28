@@ -1,5 +1,5 @@
-Lora/Utilities/low_power.o: ../Lora/Utilities/low_power.c \
- ../Inc/includes.h ../Inc/hw_conf.h \
+Lora/Utilities/low_power.o: ../Lora/Utilities/low_power.c ../Inc/hw.h \
+ ../Inc/hw_conf.h \
  ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
  ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h \
  ../Drivers/CMSIS/Include/core_cm4.h \
@@ -25,11 +25,16 @@ Lora/Utilities/low_power.o: ../Lora/Utilities/low_power.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
- ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h ../Inc/config.h \
- ../Lora/Utilities/low_power.h
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
+ ../Inc/hw_gpio.h ../Inc/hw_spi.h ../Inc/hw_rtc.h \
+ ../Lora/Utilities/utilities.h ../Inc/includes.h ../Inc/config.h \
+ ../Inc/debug.h ../Inc/includes.h ../Lora/Utilities/low_power.h \
+ ../Inc/utilities_conf.h
 
-../Inc/includes.h:
+../Inc/hw.h:
 
 ../Inc/hw_conf.h:
 
@@ -83,10 +88,30 @@ Lora/Utilities/low_power.o: ../Lora/Utilities/low_power.c \
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h:
 
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc_ex.h:
+
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
 
+../Inc/hw_gpio.h:
+
+../Inc/hw_spi.h:
+
+../Inc/hw_rtc.h:
+
+../Lora/Utilities/utilities.h:
+
+../Inc/includes.h:
+
 ../Inc/config.h:
 
+../Inc/debug.h:
+
+../Inc/includes.h:
+
 ../Lora/Utilities/low_power.h:
+
+../Inc/utilities_conf.h:

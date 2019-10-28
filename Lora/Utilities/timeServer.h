@@ -15,45 +15,17 @@ Maintainer: Miguel Luis and Gregory Cristian
 /******************************************************************************
   * @file    timeServer.h
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    27-February-2017
   * @brief   is the timer server driver
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics International N.V. 
+  * <h2><center>&copy; Copyright (c) 2018 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
-  * Redistribution and use in source and binary forms, with or without 
-  * modification, are permitted, provided that the following conditions are met:
-  *
-  * 1. Redistribution of source code must retain the above copyright notice, 
-  *    this list of conditions and the following disclaimer.
-  * 2. Redistributions in binary form must reproduce the above copyright notice,
-  *    this list of conditions and the following disclaimer in the documentation
-  *    and/or other materials provided with the distribution.
-  * 3. Neither the name of STMicroelectronics nor the names of other 
-  *    contributors to this software may be used to endorse or promote products 
-  *    derived from this software without specific written permission.
-  * 4. This software, including modifications and/or derivative works of this 
-  *    software, must execute solely and exclusively on microcontroller or
-  *    microprocessor devices manufactured by or for STMicroelectronics.
-  * 5. Redistribution and use of this software other than as permitted under 
-  *    this license is void and will automatically terminate your rights under 
-  *    this license. 
-  *
-  * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
-  * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
-  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
-  * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
-  * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT 
-  * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-  * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-  * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
-  * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  * This software component is licensed by ST under Ultimate Liberty license
+  * SLA0044, the "License"; You may not use this file except in compliance with
+  * the License. You may obtain a copy of the License at:
+  *                             www.st.com/SLA0044
   *
   ******************************************************************************
   */
@@ -67,8 +39,9 @@ Maintainer: Miguel Luis and Gregory Cristian
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-   
+#include <stdbool.h>
 #include "utilities.h"
+
 
 /* Exported types ------------------------------------------------------------*/
 
@@ -77,12 +50,14 @@ Maintainer: Miguel Luis and Gregory Cristian
  */
 typedef struct TimerEvent_s
 {
-    uint32_t Timestamp;         //! Expiring timer value in ticks from TimerContext
-    uint32_t ReloadValue;       //! Reload Value when Timer is restarted
-    bool IsRunning;             //! Is the timer currently running
-    void ( *Callback )( void ); //! Timer IRQ callback function
-    struct TimerEvent_s *Next;  //! Pointer to the next Timer object.
-} TimerEvent_t;
+    uint32_t Timestamp;                  //! Expiring timer value in ticks from TimerContext
+    uint32_t ReloadValue;                //! Reload Value when Timer is restarted
+    bool IsStarted;                      //! Is the timer currently running
+    bool IsNext2Expire;                  //! Is the next timer to expire
+    void ( *Callback )( void* context ); //! Timer IRQ callback function
+    void *Context;                       //! User defined data object pointer to pass back
+    struct TimerEvent_s *Next;           //! Pointer to the next Timer object.
+}TimerEvent_t;
 
 
 /* Exported constants --------------------------------------------------------*/
@@ -99,7 +74,15 @@ typedef struct TimerEvent_s
  * \param [IN] obj          Structure containing the timer object parameters
  * \param [IN] callback     Function callback called at the end of the timeout
  */
-void TimerInit( TimerEvent_t *obj, void ( *callback )( void ) );
+void TimerInit( TimerEvent_t *obj, void ( *callback )( void *context ) );
+
+/*!
+ * \brief Sets a user defined object pointer
+ *
+ * \param [IN] context User defined data object pointer to pass back
+ *                     on IRQ handler callback
+ */
+void TimerSetContext( TimerEvent_t *obj, void* context );
 
 /*!
  * \brief Timer IRQ event handler
@@ -116,6 +99,16 @@ void TimerIrqHandler( void );
  * \param [IN] obj Structure containing the timer object parameters
  */
 void TimerStart( TimerEvent_t *obj );
+
+/*!
+ * \brief Checks if the provided timer is running
+ *
+ * \param [IN] obj Structure containing the timer object parameters
+ *
+ * \retval status  returns the timer activity status [true: Started,
+ *                                                    false: Stopped]
+ */
+bool TimerIsStarted( TimerEvent_t *obj );
 
 /*!
  * \brief Stops and removes the timer object from the list of timer events
@@ -139,7 +132,6 @@ void TimerReset( TimerEvent_t *obj );
  */
 void TimerSetValue( TimerEvent_t *obj, uint32_t value );
 
-
 /*!
  * \brief Read the current time
  *
@@ -154,6 +146,17 @@ TimerTime_t TimerGetCurrentTime( void );
  * \retval time             returns elapsed time in ms
  */
 TimerTime_t TimerGetElapsedTime( TimerTime_t savedTime );
+
+/*!
+ * \brief Computes the temperature compensation for a period of time on a
+ *        specific temperature.
+ *
+ * \param [IN] period Time period to compensate
+ * \param [IN] temperature Current temperature
+ *
+ * \retval Compensated time period
+ */
+TimerTime_t TimerTempCompensation( TimerTime_t period, float temperature );
 
 #ifdef __cplusplus
 }

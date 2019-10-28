@@ -68,7 +68,7 @@
 
 #define RTC_OUTPUT       DBG_RTC_OUTPUT
 
-#define RTC_Alarm_IRQn              RTC_IRQn
+//#define RTC_Alarm_IRQn              RTC_IRQn
 /* --------------------------- USART HW definition -------------------------------*/
 #define USARTx                           USART2
 #define USARTx_CLK_ENABLE()              __USART2_CLK_ENABLE();

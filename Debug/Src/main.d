@@ -24,9 +24,15 @@ Src/main.o: ../Src/main.c ../Inc/includes.h ../Inc/hw_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h ../Inc/config.h \
- ../Inc/spi.h ../Inc/includes.h ../Inc/uart.h
+ ../Lora/Phy/radio.h ../Lora/Utilities/timeServer.h \
+ ../Lora/Utilities/utilities.h ../Lora/Utilities/delay.h \
+ ../Lora/Utilities/low_power.h ../Inc/utilities_conf.h \
+ ../Lora/Core/lora.h ../Inc/Comissioning.h ../Lora/Mac/LoRaMac.h \
+ ../Lora/Mac/region/Region.h ../Inc/uart.h
 
 ../Inc/includes.h:
 
@@ -82,14 +88,34 @@ Src/main.o: ../Src/main.c ../Inc/includes.h ../Inc/hw_conf.h \
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h:
 
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc_ex.h:
+
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
 
 ../Inc/config.h:
 
-../Inc/spi.h:
+../Lora/Phy/radio.h:
 
-../Inc/includes.h:
+../Lora/Utilities/timeServer.h:
+
+../Lora/Utilities/utilities.h:
+
+../Lora/Utilities/delay.h:
+
+../Lora/Utilities/low_power.h:
+
+../Inc/utilities_conf.h:
+
+../Lora/Core/lora.h:
+
+../Inc/Comissioning.h:
+
+../Lora/Mac/LoRaMac.h:
+
+../Lora/Mac/region/Region.h:
 
 ../Inc/uart.h:
