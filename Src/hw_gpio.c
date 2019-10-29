@@ -58,7 +58,7 @@ static uint8_t HW_GPIO_GetBitPos(uint16_t GPIO_Pin);
 void HW_GPIO_Init( GPIO_TypeDef* port, uint16_t GPIO_Pin, GPIO_InitTypeDef* initStruct)
 {
 
- // RCC_GPIO_CLK_ENABLE(  (uint32_t) port);
+  RCC_GPIO_CLK_ENABLE(  (uint32_t) port);
 
   initStruct->Pin = GPIO_Pin ;
 

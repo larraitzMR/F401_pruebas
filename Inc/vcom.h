@@ -1,9 +1,23 @@
+/*
+ / _____)             _              | |
+( (____  _____ ____ _| |_ _____  ____| |__
+ \____ \| ___ |    (_   _) ___ |/ ___)  _ \
+ _____) ) ____| | | || |_| ____( (___| | | |
+(______/|_____)_|_|_| \__)_____)\____)_| |_|
+    (C)2013 Semtech
+
+Description: virtual com port driver
+
+License: Revised BSD License, see LICENSE.TXT file include in the project
+
+Maintainer: Miguel Luis and Gregory Cristian
+*/
  /******************************************************************************
-  * @file    debug.h
+  * @file    vcom.h
   * @author  MCD Application Team
   * @version V1.1.0
   * @date    27-February-2017
-  * @brief   Header for driver debug.c module
+  * @brief   Header for vcom.c module
   ******************************************************************************
   * @attention
   *
@@ -43,83 +57,86 @@
   *
   ******************************************************************************
   */
-
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __DEBUG_H__
-#define __DEBUG_H__
+#ifndef __VCOM_H__
+#define __VCOM_H__
 
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-
-
-
-#include <string.h>
-#include <stdio.h>
-#include "hw_conf.h"
-#include "vcom.h"
-
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* External variables --------------------------------------------------------*/
-/* Exported macros -----------------------------------------------------------*/
+
 /* Exported functions ------------------------------------------------------- */
 
-void DBG_Init( void );
+/**
+* @brief  Init the VCOM.
+* @param  None
+* @return None
+*/
+void vcom_Init(void);
 
-void Error_Handler( void );
+   /**
+* @brief  DeInit the VCOM.
+* @param  None
+* @return None
+*/
+void vcom_DeInit(void);
 
-#ifdef DEBUG
+   /**
+* @brief  Init the VCOM IOs.
+* @param  None
+* @return None
+*/
+void vcom_IoInit(void);
 
-#define DBG_GPIO_WRITE( gpio, n, x )  HAL_GPIO_WritePin( gpio, n, (GPIO_PinState)(x) )
+   /**
+* @brief  DeInit the VCOM IOs.
+* @param  None
+* @return None
+*/
+void vcom_IoDeInit(void);
 
-#define DBG_GPIO_SET( gpio, n )       gpio->BSRR = n
+/**
+* @brief  Records string on circular Buffer and set SW interrupt
+* @note   Set NVIC to call vcom_Send
+* @param  string
+* @return None
+*/
+void vcom_Send( char *format, ... );
 
-#define DBG_GPIO_RST( gpio, n )       gpio->BRR = n
+/**
+* @brief  Sends circular Buffer on com port in IT mode
+* @note   called from low Priority interrupt
+* @param  None
+* @return None
+*/
+void vcom_Print( void);
 
-#define DBG_RTC_OUTPUT RTC_OUTPUT_DISABLE; /* RTC_OUTPUT_ALARMA on PC13 */
+/**
+* @brief  Records string on circular Buffer
+* @note   To be called only from critical section from low power section
+*         Other wise use vcom_Send
+* @param  string
+* @return None
+*/
+void vcom_Send_Lp( char *format, ... );
 
-#define DBG( x )  do{ x } while(0)
+/* Exported macros -----------------------------------------------------------*/
+#if 1
+#define PRINTF(...)            vcom_Send(__VA_ARGS__)
+#else
+#define PRINTF(...)
+#endif
 
-#ifdef TRACE
-
-#define DBG_PRINTF(...)    vcom_Send(__VA_ARGS__)
-
-#define DBG_PRINTF_CRITICAL(...)   vcom_Send_Lp(__VA_ARGS__)
-
-#else /*TRACE*/
-
-#define DBG_PRINTF(...)
-
-#define DBG_PRINTF_CRITICAL(...)
-
-#endif /*TRACE*/
-
-
-#else /* DEBUG */
-
-#define DBG_GPIO_WRITE( gpio, n, x )
-
-#define DBG_GPIO_SET( gpio, n )
-
-#define DBG_GPIO_RST( gpio, n )
-
-#define DBG( x ) do{  } while(0)
-
-#define DBG_PRINTF(...)
-
-#define DBG_PRINTF_CRITICAL(...)
-
-#define DBG_RTC_OUTPUT RTC_OUTPUT_DISABLE;
-
-#endif /* DEBUG */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __DEBUG_H__*/
+#endif /* __VCOM_H__*/
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

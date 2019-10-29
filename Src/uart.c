@@ -10,12 +10,10 @@
 
 UART_HandleTypeDef huart2;
 
-void UART_Init(UART_HandleTypeDef* huart)
+void UART_Init()
 {
 
   GPIO_InitTypeDef GPIO_InitStruct;
-  if(huart->Instance==USART2)
-  {
   /* USER CODE BEGIN USART2_MspInit 0 */
 
   /* USER CODE END USART2_MspInit 0 */
@@ -41,7 +39,6 @@ void UART_Init(UART_HandleTypeDef* huart)
     GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-  }
 }
 
 void UART_DeInit(UART_HandleTypeDef* huart)

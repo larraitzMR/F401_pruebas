@@ -1,4 +1,4 @@
-hw_gpio.c:58:6:HW_GPIO_Init	24	static
+hw_gpio.c:58:6:HW_GPIO_Init	48	static
 hw_gpio.c:79:6:HW_GPIO_SetIrq	32	static
 hw_gpio.c:109:6:HW_GPIO_IrqHandler	24	static
 hw_gpio.c:128:6:HW_GPIO_Write	24	static

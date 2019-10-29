@@ -30,6 +30,7 @@
 "Lora/Utilities/low_power.o"
 "Lora/Utilities/timeServer.o"
 "Lora/Utilities/utilities.o"
+"Src/debug.o"
 "Src/gpio.o"
 "Src/hw_gpio.o"
 "Src/hw_rtc.o"

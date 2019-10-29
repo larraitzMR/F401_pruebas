@@ -32,7 +32,7 @@ Src/main.o: ../Src/main.c ../Inc/includes.h ../Inc/hw_conf.h \
  ../Lora/Utilities/utilities.h ../Lora/Utilities/delay.h \
  ../Lora/Utilities/low_power.h ../Inc/utilities_conf.h \
  ../Lora/Core/lora.h ../Inc/Comissioning.h ../Lora/Mac/LoRaMac.h \
- ../Lora/Mac/region/Region.h ../Inc/uart.h
+ ../Lora/Mac/region/Region.h ../Inc/uart.h ../Inc/vcom.h
 
 ../Inc/includes.h:
 
@@ -119,3 +119,5 @@ Src/main.o: ../Src/main.c ../Inc/includes.h ../Inc/hw_conf.h \
 ../Lora/Mac/region/Region.h:
 
 ../Inc/uart.h:
+
+../Inc/vcom.h:
