@@ -1,6 +1,6 @@
 Src/hw_gpio.o: ../Src/hw_gpio.c ../Inc/hw.h ../Inc/hw_conf.h \
  ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
- ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h \
+ ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f411xe.h \
  ../Drivers/CMSIS/Include/core_cm4.h \
  ../Drivers/CMSIS/Include/cmsis_version.h \
  ../Drivers/CMSIS/Include/cmsis_compiler.h \
@@ -38,7 +38,7 @@ Src/hw_gpio.o: ../Src/hw_gpio.c ../Inc/hw.h ../Inc/hw_conf.h \
 
 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
 
-../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f401xe.h:
+../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f411xe.h:
 
 ../Drivers/CMSIS/Include/core_cm4.h:
 

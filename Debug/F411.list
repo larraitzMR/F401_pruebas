@@ -3,7 +3,7 @@ F411.elf:     file format elf32-littlearm
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .isr_vector   00000194  08000000  08000000  00010000  2**0
+  0 .isr_vector   00000198  08000000  08000000  00010000  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         000066a4  08000198  08000198  00010198  2**3
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00020040  2**0
                   CONTENTS, READONLY
- 12 .debug_info   000150cc  00000000  00000000  00020070  2**0
+ 12 .debug_info   000150f3  00000000  00000000  00020070  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 0000329e  00000000  00000000  0003513c  2**0
+ 13 .debug_abbrev 0000329e  00000000  00000000  00035163  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_aranges 00000d80  00000000  00000000  000383e0  2**3
+ 14 .debug_aranges 00000d80  00000000  00000000  00038408  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_ranges 00000c30  00000000  00000000  00039160  2**3
+ 15 .debug_ranges 00000c30  00000000  00000000  00039188  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  00019ac5  00000000  00000000  00039d90  2**0
+ 16 .debug_macro  00019c00  00000000  00000000  00039db8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   0000e10f  00000000  00000000  00053855  2**0
+ 17 .debug_line   0000e10f  00000000  00000000  000539b8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    00095d73  00000000  00000000  00061964  2**0
+ 18 .debug_str    0009690c  00000000  00000000  00061ac7  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  000f76d7  2**0
+ 19 .comment      0000007b  00000000  00000000  000f83d3  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00003814  00000000  00000000  000f7754  2**2
+ 20 .debug_frame  00003814  00000000  00000000  000f8450  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
