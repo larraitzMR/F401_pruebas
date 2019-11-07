@@ -78,7 +78,7 @@ void DBG_Init( void )
   HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_SYSCLK, RCC_MCODIV_1);
 #endif
 
-  __HAL_RCC_DBGMCU_CLK_ENABLE( );
+  //__HAL_RCC_DBGMCU_CLK_ENABLE( );
 
   HAL_DBGMCU_EnableDBGSleepMode( );
   HAL_DBGMCU_EnableDBGStopMode( );

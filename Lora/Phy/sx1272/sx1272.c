@@ -43,6 +43,7 @@
 #include "radio.h"
 #include "sx1272.h"
 #include "timeServer.h"
+#include "vcom.h"
 
 /*
  * Local types definition
@@ -1134,7 +1135,8 @@ void SX1272SetModem( RadioModems_t modem )
 
 void SX1272Write( uint16_t addr, uint8_t data )
 {
-    SX1272WriteBuffer( addr, &data, 1 );
+	SX1272WriteBuffer( addr, &data, 1 );
+	//PRINTF("WRITE\r\n");
 }
 
 uint8_t SX1272Read( uint16_t addr )
@@ -1563,6 +1565,7 @@ void SX1272OnDio1Irq( void* context )
 void SX1272OnDio2Irq( void* context )
 {
     uint32_t afcChannel = 0;
+
 
     switch( SX1272.Settings.State )
     {

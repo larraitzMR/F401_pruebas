@@ -37,6 +37,9 @@
 #define RADIO_DIO_5_PIN                           GPIO_PIN_4
 #endif
 
+#define RADIO_ANT_SWITCH_PORT                     GPIOC
+#define RADIO_ANT_SWITCH_PIN                      GPIO_PIN_1
+
 #define RADIO_TCXO_VCC_PORT                       GPIOA
 #define RADIO_TCXO_VCC_PIN                        GPIO_PIN_12
 

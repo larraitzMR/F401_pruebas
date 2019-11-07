@@ -41,6 +41,7 @@ Maintainer: Miguel Luis and Gregory Cristian
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 static SPI_HandleTypeDef hspi;
+static SPI_HandleTypeDef hspi1;
 /* Private function prototypes -----------------------------------------------*/
 
 /*!
@@ -114,7 +115,7 @@ void HW_SPI_IoInit( void )
 
 
   initStruct.Mode = GPIO_MODE_AF_PP;
-  initStruct.Pull = GPIO_PULLDOWN  ;
+  initStruct.Pull = GPIO_PULLDOWN  ; //GPIO_PULLDOWN
   initStruct.Speed = GPIO_SPEED_HIGH;
   initStruct.Alternate= SPI1_AF;
 
@@ -123,7 +124,7 @@ void HW_SPI_IoInit( void )
   HW_GPIO_Init( RADIO_MOSI_PORT, RADIO_MOSI_PIN, &initStruct);
 
   initStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  initStruct.Pull = GPIO_PULLUP	;
+  initStruct.Pull = GPIO_PULLUP	;//GPIO_PULLUP
 
   HW_GPIO_Init(  RADIO_NSS_PORT, RADIO_NSS_PIN, &initStruct );
 
@@ -165,8 +166,7 @@ uint16_t HW_SPI_InOut( uint16_t txData )
 
   HAL_SPI_TransmitReceive( &hspi, ( uint8_t * ) &txData, ( uint8_t* ) &rxData, 1, HAL_MAX_DELAY);
 
-  return rxData;
-}
+  return rxData;}
 
 /* Private functions ---------------------------------------------------------*/
 

@@ -174,6 +174,16 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 //
 //}
 
+/**
+  * @brief  EXTI line detection callbacks.
+  * @param  GPIO_Pin: Specifies the pins connected to the EXTI line.
+  * @retval None
+  */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  HW_GPIO_IrqHandler( GPIO_Pin );
+}
+
 IRQn_Type MSP_GetIRQn( uint16_t GPIO_Pin)
 {
   switch( GPIO_Pin )

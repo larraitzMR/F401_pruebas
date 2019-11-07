@@ -6,7 +6,7 @@
 #include "delay.h"
 #include "low_power.h"
 #include "lora.h"
-#include "uart.h"
+
 #include "vcom.h"
 
 #if defined( USE_BAND_868 )
@@ -75,7 +75,7 @@ uint8_t Buffer[BUFFER_SIZE];
 
 uint8_t BufferSPI[BUFFER_SIZE];
 
-States_t State = RX;
+States_t State = LOWPOWER;
 
 int8_t RssiValue = 0;
 int8_t SnrValue = 0;
@@ -130,29 +130,28 @@ void PRINT(char *msg){
 
 
 int main(void) {
-	bool isMaster = false;
+	bool isMaster = true;
 	uint8_t i;
 
 	HAL_Init();
 
 	SystemClock_Config();
 
-//	DBG_Init();
-//	vcom_Init();
+
+	//DBG_Init();
+	Radio.IoInit();
+	HW_SPI_Init();
+	vcom_Init();
 	UART_Init();
 	USART2_UART_Init();
 
-//  SPI_Init(&hspi1);
-//  SPI1_Init();
+//    SPI_Init(&hspi1);
+//    SPI1_Init();
 
-	HW_SPI_Init();
 
-//	PRINTF("HOLA");
-//	char *msg = "\n\rEsto se imprime por TeraTerm!\n\r";
-//	HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 0xFFFF);
-	PRINT("\n\rHOLA!\n\r");
 
-	Radio.IoInit();
+    PRINTF("------------- INICIO -------------\r\n");
+
 
 //   Radio initialization
 	RadioEvents.TxDone = OnTxDone;
@@ -175,6 +174,7 @@ int main(void) {
 	LORA_SYMBOL_TIMEOUT, LORA_FIX_LENGTH_PAYLOAD_ON, 0, true, 0, 0,
 			LORA_IQ_INVERSION_ON, true);
 
+	//Establece la radio en modo de recepción durante un tiempo
 	Radio.Rx( RX_TIMEOUT_VALUE);
 
 	//HAL_SPI_TransmitReceive(&hspi1, "HOLA", (uint8_t *) BufferSPI, 7, 5000);
@@ -196,9 +196,9 @@ int main(void) {
 						for (i = 4; i < BufferSize; i++) {
 							Buffer[i] = i - 4;
 						}
-						PRINT("...PING\n");
+						PRINTF("...PING\r\n");
 
-//            DelayMs( 1 );
+						DelayMs( 1 );
 						Radio.Send(Buffer, BufferSize);
 					} else if (strncmp((const char*) Buffer,
 							(const char*) PingMsg, 4) == 0) { // A master already exists then become a slave
@@ -224,10 +224,10 @@ int main(void) {
 						for (i = 4; i < BufferSize; i++) {
 							Buffer[i] = i - 4;
 						}
-//              DelayMs( 1 );
+						DelayMs( 1 );
 
 						Radio.Send(Buffer, BufferSize);
-						PRINT("...PONG\n");
+						PRINTF("...PONG\r\n");
 					} else // valid reception but not a PING as expected
 					{    // Set device as master and start again
 						isMaster = true;
@@ -255,7 +255,7 @@ int main(void) {
 				for (i = 4; i < BufferSize; i++) {
 					Buffer[i] = i - 4;
 				}
-//        DelayMs( 1 );
+				DelayMs( 1 );
 				Radio.Send(Buffer, BufferSize);
 			} else {
 				Radio.Rx( RX_TIMEOUT_VALUE);
@@ -281,7 +281,7 @@ int main(void) {
 void OnTxDone(void) {
 	Radio.Sleep();
 	State = TX;
-	PRINT("OnTxDone\n");
+	PRINTF("OnTxDone\n");
 }
 
 void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr) {
@@ -292,27 +292,27 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr) {
 	SnrValue = snr;
 	State = RX;
 
-	PRINT("OnRxDone\n");
-	//PRINT("RssiValue=%d dBm, SnrValue=%d\n", rssi, snr);
+	PRINTF("OnRxDone\n");
+	PRINTF("RssiValue=%d dBm, SnrValue=%d\n", rssi, snr);
 }
 
 void OnTxTimeout(void) {
 	Radio.Sleep();
 	State = TX_TIMEOUT;
 
-	PRINT("OnTxTimeout\n");
+	PRINTF("OnTxTimeout\n");
 }
 
 void OnRxTimeout(void) {
 	Radio.Sleep();
 	State = RX_TIMEOUT;
-	PRINT("OnRxTimeout\n");
+	PRINTF("OnRxTimeout\n");
 }
 
 void OnRxError(void) {
 	Radio.Sleep();
 	State = RX_ERROR;
-	PRINT("OnRxError\n");
+	PRINTF("OnRxError\n");
 }
 
 static void OnledEvent(void) {
@@ -349,8 +349,7 @@ void SystemClock_Config(void) {
 	RCC_OscInitTypeDef RCC_OscInitStruct;
 
 	/* Enable Power Control clock */
-	__HAL_RCC_PWR_CLK_ENABLE()
-	;
+	__HAL_RCC_PWR_CLK_ENABLE();
 
 	/* The voltage scaling allows optimizing the power consumption when the device is
 	 clocked below the maximum system frequency, to update the voltage scaling value
