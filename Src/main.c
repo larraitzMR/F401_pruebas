@@ -73,7 +73,9 @@ const uint8_t PongMsg[] = "PONG";
 uint16_t BufferSize = BUFFER_SIZE;
 uint8_t Buffer[BUFFER_SIZE];
 
-uint8_t BufferSPI[BUFFER_SIZE];
+uint8_t BufferSPI[10];
+/* Buffer used for reception */
+uint8_t aRxBuffer[BUFFER_SIZE];
 
 States_t State = LOWPOWER;
 
@@ -121,22 +123,27 @@ static void OnledEvent(void);
  * Main application entry point.
  */
 
+struct datosVariscite {
+	char datos[10];
+};
+
+struct datosVariscite misDat[15];
+
 extern UART_HandleTypeDef huart2;
-
-void PRINT(char *msg){
-	HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), 1000);
-}
-
-
+extern SPI_HandleTypeDef hspi2;
+uint8_t ReadyMsg[] = "READY";
+uint8_t OKMsg[] = "OK";
+int recibidoReady = 0;
+int recibidoOK = 0;
+char info[10];
+int i = 1;
 
 int main(void) {
 	bool isMaster = true;
-	uint8_t i;
 
 	HAL_Init();
 
 	SystemClock_Config();
-
 
 	//DBG_Init();
 	Radio.IoInit();
@@ -145,13 +152,10 @@ int main(void) {
 	UART_Init();
 	USART2_UART_Init();
 
-//    SPI_Init(&hspi1);
-//    SPI1_Init();
+    SPI_Init(&hspi2);
+    SPI2_Init();
 
-
-
-    PRINTF("------------- INICIO -------------\r\n");
-
+	PRINTF("------------- INICIO -------------\r\n");
 
 //   Radio initialization
 	RadioEvents.TxDone = OnTxDone;
@@ -172,92 +176,72 @@ int main(void) {
 	Radio.SetRxConfig(MODEM_LORA, LORA_BANDWIDTH, LORA_SPREADING_FACTOR,
 	LORA_CODINGRATE, 0, LORA_PREAMBLE_LENGTH,
 	LORA_SYMBOL_TIMEOUT, LORA_FIX_LENGTH_PAYLOAD_ON, 0, true, 0, 0,
-			LORA_IQ_INVERSION_ON, true);
+	LORA_IQ_INVERSION_ON, true);
 
 	//Establece la radio en modo de recepción durante un tiempo
 	Radio.Rx( RX_TIMEOUT_VALUE);
+	DelayMs(1);
+	Radio.Send("PREST", BufferSize);
+	DelayMs(1);
 
 	//HAL_SPI_TransmitReceive(&hspi1, "HOLA", (uint8_t *) BufferSPI, 7, 5000);
 
 	while (1) {
+
+		HAL_SPI_Receive(&hspi2, (uint8_t *) BufferSPI, 10, 1000);
+		while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY) {
+			}
+		PRINTF("%s\r\n", BufferSPI);
+		//sprintf(info, "%s", BufferSPI);
+		strcpy(misDat[i].datos, BufferSPI);
+		//PRINTF("%s\r\n", misDat[i].datos);
+		DelayMs(1);
+		//Radio.Send("yeyeye", BufferSize);
+
 		switch (State) {
 		case RX:
 			if (isMaster == true) {
 				if (BufferSize > 0) {
-					if (strncmp((const char*) Buffer, (const char*) PongMsg, 4)
-							== 0) {
-
-						// Send the next PING frame
-						Buffer[0] = 'P';
-						Buffer[1] = 'I';
-						Buffer[2] = 'N';
-						Buffer[3] = 'G';
-						// We fill the buffer with numbers for the payload
-						for (i = 4; i < BufferSize; i++) {
-							Buffer[i] = i - 4;
-						}
-						PRINTF("...PING\r\n");
-
-						DelayMs( 1 );
-						Radio.Send(Buffer, BufferSize);
-					} else if (strncmp((const char*) Buffer,
-							(const char*) PingMsg, 4) == 0) { // A master already exists then become a slave
-						isMaster = false;
-						//GpioWrite( &Led2, 1 ); // Set LED off
-						Radio.Rx( RX_TIMEOUT_VALUE);
-					} else // valid reception but neither a PING or a PONG message
-					{    // Set device as master ans start again
-						isMaster = true;
-						Radio.Rx( RX_TIMEOUT_VALUE);
+					PRINTF("MASTER: %s\n", Buffer);
+					if (strncmp((const char*) Buffer, (const char*) ReadyMsg, 5)== 0) {
+						PRINTF("RECIBIDO READY\r\n");
+						DelayMs(1);
+						Radio.Send("PREST", BufferSize);
+						recibidoReady = 1;
+						//isMaster = true;
 					}
-				}
-			} else {
-				if (BufferSize > 0) {
-					if (strncmp((const char*) Buffer, (const char*) PingMsg, 4)
+					else if (strncmp((const char*) Buffer, (const char*) OKMsg, 2)
 							== 0) {
-						// Send the reply to the PONG string
-						Buffer[0] = 'P';
-						Buffer[1] = 'O';
-						Buffer[2] = 'N';
-						Buffer[3] = 'G';
-						// We fill the buffer with numbers for the payload
-						for (i = 4; i < BufferSize; i++) {
-							Buffer[i] = i - 4;
-						}
-						DelayMs( 1 );
-
-						Radio.Send(Buffer, BufferSize);
-						PRINTF("...PONG\r\n");
-					} else // valid reception but not a PING as expected
-					{    // Set device as master and start again
-						isMaster = true;
-						Radio.Rx( RX_TIMEOUT_VALUE);
+						PRINTF("RECIBIDO OK\r\n");
+						DelayMs(1);
+						PRINTF("DATOS: %s\r\n", misDat[i].datos);
+						Radio.Send(misDat[i].datos, BufferSize);
+						recibidoOK = 1;
+					}
+					else {
+						PRINTF("NI READY NI OK\r\n");
+						DelayMs(1);
 					}
 				}
 			}
+			Radio.Rx( RX_TIMEOUT_VALUE);
 			State = LOWPOWER;
 			break;
 		case TX:
-			// Indicates on a LED that we have sent a PING [Master]
-			// Indicates on a LED that we have sent a PONG [Slave]
-			//GpioWrite( &Led2, GpioRead( &Led2 ) ^ 1 );
 			Radio.Rx( RX_TIMEOUT_VALUE);
 			State = LOWPOWER;
 			break;
 		case RX_TIMEOUT:
 		case RX_ERROR:
-			if (isMaster == true) {
-				// Send the next PING frame
-				Buffer[0] = 'P';
-				Buffer[1] = 'I';
-				Buffer[2] = 'N';
-				Buffer[3] = 'G';
-				for (i = 4; i < BufferSize; i++) {
-					Buffer[i] = i - 4;
-				}
-				DelayMs( 1 );
-				Radio.Send(Buffer, BufferSize);
+			if (recibidoReady == 0) {
+				PRINTF("RX_ERROR\n");
+				Radio.Send("PREST", BufferSize);
+				DelayMs(1);
+				Radio.Rx( RX_TIMEOUT_VALUE);
 			} else {
+				PRINTF("DATOS: %s\r\n", misDat[i].datos);
+				Radio.Send(misDat[i].datos, BufferSize);
+				DelayMs(1);
 				Radio.Rx( RX_TIMEOUT_VALUE);
 			}
 			State = LOWPOWER;
@@ -268,10 +252,16 @@ int main(void) {
 			break;
 		case LOWPOWER:
 		default:
-			// Set low power
+			Radio.Rx( RX_TIMEOUT_VALUE);
 			break;
 		}
+		memset(BufferSPI, 0, BufferSize);
+		PRINTF("i: %d\r\n", i);
+		i++;
 
+		if (i == 14) {
+			i = 0;
+		}
 		DISABLE_IRQ( );
 		ENABLE_IRQ( );
 
@@ -281,7 +271,7 @@ int main(void) {
 void OnTxDone(void) {
 	Radio.Sleep();
 	State = TX;
-	PRINTF("OnTxDone\n");
+//	PRINTF("OnTxDone\n");
 }
 
 void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr) {
@@ -292,27 +282,27 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr) {
 	SnrValue = snr;
 	State = RX;
 
-	PRINTF("OnRxDone\n");
-	PRINTF("RssiValue=%d dBm, SnrValue=%d\n", rssi, snr);
+//	PRINTF("OnRxDone\n");
+//	PRINTF("RssiValue=%d dBm, SnrValue=%d\n", rssi, snr);
 }
 
 void OnTxTimeout(void) {
 	Radio.Sleep();
 	State = TX_TIMEOUT;
 
-	PRINTF("OnTxTimeout\n");
+	//PRINTF("OnTxTimeout\n");
 }
 
 void OnRxTimeout(void) {
 	Radio.Sleep();
 	State = RX_TIMEOUT;
-	PRINTF("OnRxTimeout\n");
+	//PRINTF("OnRxTimeout\n");
 }
 
 void OnRxError(void) {
 	Radio.Sleep();
 	State = RX_ERROR;
-	PRINTF("OnRxError\n");
+//	PRINTF("OnRxError\n");
 }
 
 static void OnledEvent(void) {
@@ -349,7 +339,8 @@ void SystemClock_Config(void) {
 	RCC_OscInitTypeDef RCC_OscInitStruct;
 
 	/* Enable Power Control clock */
-	__HAL_RCC_PWR_CLK_ENABLE();
+	__HAL_RCC_PWR_CLK_ENABLE()
+	;
 
 	/* The voltage scaling allows optimizing the power consumption when the device is
 	 clocked below the maximum system frequency, to update the voltage scaling value
