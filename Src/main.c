@@ -181,7 +181,7 @@ int main(void) {
 	Radio.Rx( RX_TIMEOUT_VALUE);
 	DelayMs(1);
 	Radio.Send("PREST", BufferSize);
-//	DelayMs(1);
+	DelayMs(1);
 
 	//
 
@@ -194,10 +194,10 @@ int main(void) {
 		HAL_SPI_Receive(&hspi2, (uint8_t *) BufferSPI, 8, 1000);
 //		while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY) {
 //			}
-		PRINTF("%s\r\n", BufferSPI);
+//		PRINTF("%s\r\n", BufferSPI);
 	//	HAL_Delay(1000);
 //		//sprintf(info, "%s", BufferSPI);
-//		strcpy(misDat[i].datos, BufferSPI);
+		strcpy(misDat[i].datos, BufferSPI);
 //		//PRINTF("%s\r\n", misDat[i] .datos);
 //
 //
