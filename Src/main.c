@@ -155,7 +155,7 @@ int main(void) {
     SPI_Init(&hspi2);
     SPI2_Init();
 
-	PRINTF("------------- INICIO -------------\r\n");
+	PRINTF("------------- PROGRAMA F411 -------------\r\n");
 
 //   Radio initialization
 	RadioEvents.TxDone = OnTxDone;
@@ -180,29 +180,30 @@ int main(void) {
 	//Establece la radio en modo de recepción durante un tiempo
 	Radio.Rx( RX_TIMEOUT_VALUE);
 	DelayMs(1);
-	Radio.Send("PREST", BufferSize);
-	DelayMs(1);
+
 
 	//
 
 	while (1) {
 
-//		HAL_SPI_TransmitReceive(&hspi2, "HOLA", (uint8_t *) BufferSPI, 8, 4000);
+		HAL_SPI_TransmitReceive(&hspi2, "HOLA", (uint8_t *) BufferSPI, 8, 4000);
 //		while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY) {
 //		}
 
-		HAL_SPI_Receive(&hspi2, (uint8_t *) BufferSPI, 8, 1000);
+//		HAL_SPI_Receive(&hspi2, (uint8_t *) BufferSPI, 8, 1000);
+		Radio.Send(BufferSPI, BufferSize);
+		DelayMs(3);
 //		while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY) {
 //			}
 //		PRINTF("%s\r\n", BufferSPI);
 	//	HAL_Delay(1000);
 //		//sprintf(info, "%s", BufferSPI);
-		strcpy(misDat[i].datos, BufferSPI);
-//		//PRINTF("%s\r\n", misDat[i] .datos);
+//		strcpy(misDat[i].datos, BufferSPI);
+//		PRINTF("%s\r\n", misDat[i] .datos);
 //
 //
 //		//		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-		HAL_SPI_Transmit(&hspi2, (uint8_t *) "ADIOS", 5, 1000);
+//		HAL_SPI_Transmit(&hspi2, (uint8_t *) "ADIOS", 5, 1000);
 //		while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY) {
 //			}
 
@@ -211,49 +212,59 @@ int main(void) {
 //		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 		switch (State) {
 		case RX:
+			PRINTF("RX\n");
 			if (isMaster == true) {
 				if (BufferSize > 0) {
-					PRINTF("MASTER: %s\n", Buffer);
-					if (strncmp((const char*) Buffer, (const char*) ReadyMsg, 5)== 0) {
-						PRINTF("RECIBIDO READY\r\n");
-						Radio.Send("PREST", BufferSize);
-						recibidoReady = 1;
-						//isMaster = true;
-					}
-					else if (strncmp((const char*) Buffer, (const char*) OKMsg, 2)
+					PRINTF("MASTER: %s\r\n", Buffer);
+//					if (strncmp((const char*) Buffer, (const char*) ReadyMsg, 5)== 0) {
+//						PRINTF("RECIBIDO READY\r\n");
+//						Radio.Send("PREST", BufferSize);
+//						recibidoReady = 1;
+//						//isMaster = true;
+//					}
+					if (strncmp((const char*) Buffer, (const char*) OKMsg, 2)
 							== 0) {
 						PRINTF("RECIBIDO OK\r\n");
-						PRINTF("DATOS: %s\r\n", misDat[i].datos);
-						Radio.Send(misDat[i].datos, BufferSize);
+						//PRINTF("DATOS: %s\r\n", misDat[i].datos);
+						Radio.Send(BufferSPI, BufferSize);
+						//Radio.Send(misDat[i].datos, BufferSize);
 						recibidoOK = 1;
 					}
-					else {
-						PRINTF("NI READY NI OK\r\n");
-
-					}
+//					else {
+//						PRINTF("NI READY NI OK\r\n");
+//					}
+					Radio.Send("READER_MASTER_RX", BufferSize);
 					DelayMs(1);
+				}
+			} else {
+				if (BufferSize > 0) {
+					PRINTF("SLAVE: %s\r\n", Buffer);
+					Radio.Send("READER_SLAVE_RX", BufferSize);
 				}
 			}
 			Radio.Rx( RX_TIMEOUT_VALUE);
 			State = LOWPOWER;
 			break;
 		case TX:
+			PRINTF("TX\n");
 			Radio.Rx( RX_TIMEOUT_VALUE);
 			State = LOWPOWER;
 			break;
 		case RX_TIMEOUT:
 		case RX_ERROR:
-			if (recibidoReady == 0) {
-				PRINTF("RX_ERROR\n");
-				Radio.Send("PREST", BufferSize);
-				DelayMs(1);
-				Radio.Rx( RX_TIMEOUT_VALUE);
-			} else {
-				PRINTF("DATOS: %s\r\n", misDat[i].datos);
-				Radio.Send(misDat[i].datos, BufferSize);
-				DelayMs(1);
-				Radio.Rx( RX_TIMEOUT_VALUE);
-			}
+			PRINTF("RX_ERROR\n");
+//			if (recibidoReady == 0) {
+//				PRINTF("RX_ERROR\n");
+//				Radio.Send("PREST", BufferSize);
+//				DelayMs(1);
+//				Radio.Rx( RX_TIMEOUT_VALUE);
+//			} else {
+//				PRINTF("DATOS: %s\r\n", misDat[i].datos);
+//				Radio.Send(misDat[i].datos, BufferSize);
+//				DelayMs(1);
+//				Radio.Rx( RX_TIMEOUT_VALUE);
+//			}
+			Radio.Send("READER_MASTER_RX_ERROR", BufferSize);
 			State = LOWPOWER;
 			break;
 		case TX_TIMEOUT:
@@ -265,7 +276,7 @@ int main(void) {
 			Radio.Rx( RX_TIMEOUT_VALUE);
 			break;
 		}
-		memset(BufferSPI, 0, sizeof(BufferSPI));
+//		memset(BufferSPI, 0, sizeof(BufferSPI));
 //		PRINTF("i: %d\r\n", i);
 		i++;
 
@@ -274,7 +285,7 @@ int main(void) {
 		}
 		DISABLE_IRQ( );
 		ENABLE_IRQ( );
-//		DelayMs(1);
+		DelayMs(1);
 
 	}
 }
@@ -282,7 +293,7 @@ int main(void) {
 void OnTxDone(void) {
 	Radio.Sleep();
 	State = TX;
-//	PRINTF("OnTxDone\n");
+	PRINTF("OnTxDone\n");
 }
 
 void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr) {
@@ -293,7 +304,7 @@ void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr) {
 	SnrValue = snr;
 	State = RX;
 
-//	PRINTF("OnRxDone\n");
+	PRINTF("OnRxDone\n");
 //	PRINTF("RssiValue=%d dBm, SnrValue=%d\n", rssi, snr);
 }
 
@@ -313,7 +324,7 @@ void OnRxTimeout(void) {
 void OnRxError(void) {
 	Radio.Sleep();
 	State = RX_ERROR;
-//	PRINTF("OnRxError\n");
+	PRINTF("OnRxError\n");
 }
 
 static void OnledEvent(void) {
