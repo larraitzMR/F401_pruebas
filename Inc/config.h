@@ -4,7 +4,7 @@
 #define RADIO_RESET_PIN                           GPIO_PIN_0
 /* PINES PARA LA PLACA ST*/
 
-/*
+
 #define RADIO_MOSI_PORT                           GPIOA
 #define RADIO_MOSI_PIN                            GPIO_PIN_7
 
@@ -22,9 +22,10 @@
 
 #define RADIO_DIO_1_PORT                          GPIOB
 #define RADIO_DIO_1_PIN                           GPIO_PIN_3
-*/
+
 
 /*PINES PARA EL READER*/
+/*
 #define RADIO_MOSI_PORT                           GPIOA
 #define RADIO_MOSI_PIN                            GPIO_PIN_7
 
@@ -42,7 +43,7 @@
 
 #define RADIO_DIO_1_PORT                          GPIOA
 #define RADIO_DIO_1_PIN                           GPIO_PIN_0
-
+*/
 #define RADIO_DIO_2_PORT                          GPIOB
 #define RADIO_DIO_2_PIN                           GPIO_PIN_5
 

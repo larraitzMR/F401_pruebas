@@ -131,15 +131,19 @@ struct datosVariscite misDat[15];
 
 extern UART_HandleTypeDef huart2;
 extern SPI_HandleTypeDef hspi2;
-uint8_t ReadyMsg[] = "READY";
+//uint8_t ReadyMsg[] = "READY";
 uint8_t OKMsg[] = "OK";
 int recibidoReady = 0;
 int recibidoOK = 0;
 char info[10];
 int i = 1;
 
+uint8_t ReadyMsg[] = "PREST";
+int esclavo = 0;
+int prest = 0;
+
 int main(void) {
-	bool isMaster = true;
+	//bool isMaster = true;
 
 	HAL_Init();
 
@@ -182,89 +186,115 @@ int main(void) {
 	DelayMs(1);
 
 
-	//
+
+	Radio.Rx( RX_TIMEOUT_VALUE);
+	bool isMaster = false;
 
 	while (1) {
-
-		HAL_SPI_TransmitReceive(&hspi2, "HOLA", (uint8_t *) BufferSPI, 8, 4000);
-//		while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY) {
-//		}
-
-//		HAL_SPI_Receive(&hspi2, (uint8_t *) BufferSPI, 8, 1000);
-		Radio.Send(BufferSPI, BufferSize);
-		DelayMs(3);
-//		while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY) {
-//			}
-//		PRINTF("%s\r\n", BufferSPI);
-	//	HAL_Delay(1000);
-//		//sprintf(info, "%s", BufferSPI);
-//		strcpy(misDat[i].datos, BufferSPI);
-//		PRINTF("%s\r\n", misDat[i] .datos);
-//
-//
-//		//		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-//		HAL_SPI_Transmit(&hspi2, (uint8_t *) "ADIOS", 5, 1000);
-//		while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY) {
-//			}
-
-
-//		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-//		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
 		switch (State) {
 		case RX:
-			PRINTF("RX\n");
+			PRINTF("Buff: %s\n", Buffer);
 			if (isMaster == true) {
-				if (BufferSize > 0) {
-					PRINTF("MASTER: %s\r\n", Buffer);
-//					if (strncmp((const char*) Buffer, (const char*) ReadyMsg, 5)== 0) {
-//						PRINTF("RECIBIDO READY\r\n");
-//						Radio.Send("PREST", BufferSize);
-//						recibidoReady = 1;
-//						//isMaster = true;
-//					}
-					if (strncmp((const char*) Buffer, (const char*) OKMsg, 2)
-							== 0) {
-						PRINTF("RECIBIDO OK\r\n");
-						//PRINTF("DATOS: %s\r\n", misDat[i].datos);
-						Radio.Send(BufferSPI, BufferSize);
-						//Radio.Send(misDat[i].datos, BufferSize);
-						recibidoOK = 1;
-					}
-//					else {
-//						PRINTF("NI READY NI OK\r\n");
-//					}
-					Radio.Send("READER_MASTER_RX", BufferSize);
-					DelayMs(1);
+				PRINTF("SOY EL MASTER\r\n");
+				if (strncmp((const char*) Buffer, (const char*) "PREST", 5)	== 0) {
+					PRINTF("Recibido: %s\n", Buffer);
+					isMaster = false;
+					PRINTF("ME CONVIERTO A ESCLAVO\r\n");
+					esclavo = 1;
+					Delay(1);
+					Radio.Send( "OK", 2);
+					Radio.Rx( RX_TIMEOUT_VALUE);
+				} else {
+					//isMaster = true;
+					PRINTF("START AGAIN\r\n");
+					Radio.Rx( RX_TIMEOUT_VALUE);
 				}
+//				Radio.Send("OK", BufferSize);
+//				PRINTF("MASTER Y NI PING NI PONG\r\n");
+//				isMaster = true;
+//				Radio.Rx( RX_TIMEOUT_VALUE);
+//				if (BufferSize > 0) {
+//					if (strncmp((const char*) Buffer, (const char*) PongMsg, 4)
+//							== 0) {
+//						TimerStop(&timerLed);
+//						LED_Off(LED_BLUE);
+//						LED_Off(LED_GREEN);
+//						LED_Off(LED_RED1);;
+//						// Indicates on a LED that the received frame is a PONG
+//						LED_Toggle(LED_RED2);
+//
+//						// Send the next PING frame
+//						Buffer[0] = 'P';
+//						Buffer[1] = 'I';
+//						Buffer[2] = 'N';
+//						Buffer[3] = 'G';
+//						// We fill the buffer with numbers for the payload
+//						for (i = 4; i < BufferSize; i++) {
+//							Buffer[i] = i - 4;
+//						}
+//						PRINTF("...PING\n");
+//
+//						DelayMs(1);
+//						Radio.Send(Buffer, BufferSize);
+//					} else if (strncmp((const char*) Buffer,
+//							(const char*) PingMsg, 4) == 0) { // A master already exists then become a slave
+//						isMaster = false;
+//						PRINTF("ME CONVIERTO A ESCLAVO\r\n");
+//						//GpioWrite( &Led2, 1 ); // Set LED off
+//						Radio.Rx( RX_TIMEOUT_VALUE);
+//					} else // valid reception but neither a PING or a PONG message
+//					{    // Set device as master ans start again
+//						isMaster = true;
+//						PRINTF("MASTER Y NI PING NI PONG\r\n");
+//						Radio.Rx( RX_TIMEOUT_VALUE);
+//					}
+//				}
 			} else {
+				PRINTF("SOY ESCLAVO\r\n");
 				if (BufferSize > 0) {
-					PRINTF("SLAVE: %s\r\n", Buffer);
-					Radio.Send("READER_SLAVE_RX", BufferSize);
+					PRINTF("Slave buff: %s\n", Buffer);
+					if (strncmp((const char*) Buffer, (const char*) "PREST", 5)	== 0) {
+						PRINTF("ESCLAVO PREST: %s\r\n", Buffer);
+						Radio.Send("OK", BufferSize);
+						prest = 1;
+						DelayMs(1);
+					} else 	{
+						//isMaster = true;
+						PRINTF("ESCLAVO OK");
+						Radio.Send("OK", BufferSize);
+						DelayMs(1);
+
+					}
+					Radio.Rx( RX_TIMEOUT_VALUE);
 				}
 			}
 			Radio.Rx( RX_TIMEOUT_VALUE);
 			State = LOWPOWER;
 			break;
 		case TX:
-			PRINTF("TX\n");
+			// Indicates on a LED that we have sent a PING [Master]
+			// Indicates on a LED that we have sent a PONG [Slave]
+			//GpioWrite( &Led2, GpioRead( &Led2 ) ^ 1 );
 			Radio.Rx( RX_TIMEOUT_VALUE);
 			State = LOWPOWER;
 			break;
 		case RX_TIMEOUT:
 		case RX_ERROR:
-			PRINTF("RX_ERROR\n");
-//			if (recibidoReady == 0) {
-//				PRINTF("RX_ERROR\n");
-//				Radio.Send("PREST", BufferSize);
-//				DelayMs(1);
-//				Radio.Rx( RX_TIMEOUT_VALUE);
-//			} else {
-//				PRINTF("DATOS: %s\r\n", misDat[i].datos);
-//				Radio.Send(misDat[i].datos, BufferSize);
-//				DelayMs(1);
-//				Radio.Rx( RX_TIMEOUT_VALUE);
-//			}
-			Radio.Send("READER_MASTER_RX_ERROR", BufferSize);
+			if (isMaster == true) {
+				PRINTF("RX_ERROR_MASTER\n");
+				DelayMs(1);
+				Radio.Send("READY", BufferSize);
+			} else if (esclavo == 1 && prest == 0){
+				PRINTF("RX_ERROR_ESCLAVO\n");
+				Radio.Send("READY", BufferSize);
+			} else if (esclavo == 1 && prest == 1){
+				PRINTF("RX_ERROR_ESCLAVO\n");
+				Radio.Send("OK", BufferSize);
+			}
+			else {
+				Radio.Rx( RX_TIMEOUT_VALUE);
+			}
+			Radio.Rx( RX_TIMEOUT_VALUE);
 			State = LOWPOWER;
 			break;
 		case TX_TIMEOUT:
@@ -276,13 +306,104 @@ int main(void) {
 			Radio.Rx( RX_TIMEOUT_VALUE);
 			break;
 		}
+
+	//
+//
+//	while (1) {
+//
+//		HAL_SPI_TransmitReceive(&hspi2, "HOLA", (uint8_t *) BufferSPI, 8, 4000);
+////		while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY) {
+////		}
+//
+////		HAL_SPI_Receive(&hspi2, (uint8_t *) BufferSPI, 8, 1000);
+//		Radio.Send(BufferSPI, BufferSize);
+//		DelayMs(3);
+////		while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY) {
+////			}
+////		PRINTF("%s\r\n", BufferSPI);
+//	//	HAL_Delay(1000);
+////		//sprintf(info, "%s", BufferSPI);
+////		strcpy(misDat[i].datos, BufferSPI);
+////		PRINTF("%s\r\n", misDat[i] .datos);
+////
+////
+////		//		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+////		HAL_SPI_Transmit(&hspi2, (uint8_t *) "ADIOS", 5, 1000);
+////		while (HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY) {
+////			}
+//
+//
+////		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+////		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
+//		switch (State) {
+//		case RX:
+//			PRINTF("RX\n");
+//			if (isMaster == true) {
+//				if (BufferSize > 0) {
+//					PRINTF("MASTER: %s\r\n", Buffer);
+////					if (strncmp((const char*) Buffer, (const char*) ReadyMsg, 5)== 0) {
+////						PRINTF("RECIBIDO READY\r\n");
+////						Radio.Send("PREST", BufferSize);
+////						recibidoReady = 1;
+////						//isMaster = true;
+////					}
+//					if (strncmp((const char*) Buffer, (const char*) OKMsg, 2)
+//							== 0) {
+//						PRINTF("RECIBIDO OK\r\n");
+//						//PRINTF("DATOS: %s\r\n", misDat[i].datos);
+//						Radio.Send(BufferSPI, BufferSize);
+//						//Radio.Send(misDat[i].datos, BufferSize);
+//						recibidoOK = 1;
+//					}
+////					else {
+////						PRINTF("NI READY NI OK\r\n");
+////					}
+//					Radio.Send("READER_MASTER_RX", BufferSize);
+//					DelayMs(1);
+//				}
+//			} else {
+//				if (BufferSize > 0) {
+//					PRINTF("SLAVE: %s\r\n", Buffer);
+//					Radio.Send("READER_SLAVE_RX", BufferSize);
+//				}
+//			}
+//			Radio.Rx( RX_TIMEOUT_VALUE);
+//			State = LOWPOWER;
+//			break;
+//		case TX:
+//			PRINTF("TX\n");
+//			Radio.Rx( RX_TIMEOUT_VALUE);
+//			State = LOWPOWER;
+//			break;
+//		case RX_TIMEOUT:
+//		case RX_ERROR:
+//			PRINTF("RX_ERROR\n");
+////			if (recibidoReady == 0) {
+////				PRINTF("RX_ERROR\n");
+////				Radio.Send("PREST", BufferSize);
+////				DelayMs(1);
+////				Radio.Rx( RX_TIMEOUT_VALUE);
+////			} else {
+////				PRINTF("DATOS: %s\r\n", misDat[i].datos);
+////				Radio.Send(misDat[i].datos, BufferSize);
+////				DelayMs(1);
+////				Radio.Rx( RX_TIMEOUT_VALUE);
+////			}
+//			Radio.Send("READER_MASTER_RX_ERROR", BufferSize);
+//			State = LOWPOWER;
+//			break;
+//		case TX_TIMEOUT:
+//			Radio.Rx( RX_TIMEOUT_VALUE);
+//			State = LOWPOWER;
+//			break;
+//		case LOWPOWER:
+//		default:
+//			Radio.Rx( RX_TIMEOUT_VALUE);
+//			break;
+//		}
 //		memset(BufferSPI, 0, sizeof(BufferSPI));
 //		PRINTF("i: %d\r\n", i);
-		i++;
 
-		if (i == 14) {
-			i = 0;
-		}
 		DISABLE_IRQ( );
 		ENABLE_IRQ( );
 		DelayMs(1);
