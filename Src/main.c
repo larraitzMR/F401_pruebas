@@ -189,88 +189,110 @@ int main(void) {
 
 	Radio.Rx( RX_TIMEOUT_VALUE);
 	bool isMaster = false;
+	if (isMaster) {
+		PRINTF("\r\n----------- SOY MASTER  -----------\r\n");
+	} else {
+		PRINTF("\r\n----------- SOY ESCLAVO -----------\r\n");
+	}
+
 
 	while (1) {
 		switch (State) {
 		case RX:
-			PRINTF("Buff: %s\n", Buffer);
 			if (isMaster == true) {
-				PRINTF("SOY EL MASTER\r\n");
-				if (strncmp((const char*) Buffer, (const char*) "PREST", 5)	== 0) {
-					PRINTF("Recibido: %s\n", Buffer);
-					isMaster = false;
-					PRINTF("ME CONVIERTO A ESCLAVO\r\n");
-					esclavo = 1;
-					Delay(1);
-					Radio.Send( "OK", 2);
-					Radio.Rx( RX_TIMEOUT_VALUE);
-				} else {
-					//isMaster = true;
-					PRINTF("START AGAIN\r\n");
-					Radio.Rx( RX_TIMEOUT_VALUE);
-				}
-//				Radio.Send("OK", BufferSize);
-//				PRINTF("MASTER Y NI PING NI PONG\r\n");
-//				isMaster = true;
-//				Radio.Rx( RX_TIMEOUT_VALUE);
-//				if (BufferSize > 0) {
-//					if (strncmp((const char*) Buffer, (const char*) PongMsg, 4)
-//							== 0) {
-//						TimerStop(&timerLed);
-//						LED_Off(LED_BLUE);
-//						LED_Off(LED_GREEN);
-//						LED_Off(LED_RED1);;
-//						// Indicates on a LED that the received frame is a PONG
-//						LED_Toggle(LED_RED2);
-//
-//						// Send the next PING frame
-//						Buffer[0] = 'P';
-//						Buffer[1] = 'I';
-//						Buffer[2] = 'N';
-//						Buffer[3] = 'G';
-//						// We fill the buffer with numbers for the payload
-//						for (i = 4; i < BufferSize; i++) {
-//							Buffer[i] = i - 4;
-//						}
-//						PRINTF("...PING\n");
-//
-//						DelayMs(1);
-//						Radio.Send(Buffer, BufferSize);
-//					} else if (strncmp((const char*) Buffer,
-//							(const char*) PingMsg, 4) == 0) { // A master already exists then become a slave
-//						isMaster = false;
-//						PRINTF("ME CONVIERTO A ESCLAVO\r\n");
-//						//GpioWrite( &Led2, 1 ); // Set LED off
-//						Radio.Rx( RX_TIMEOUT_VALUE);
-//					} else // valid reception but neither a PING or a PONG message
-//					{    // Set device as master ans start again
-//						isMaster = true;
-//						PRINTF("MASTER Y NI PING NI PONG\r\n");
-//						Radio.Rx( RX_TIMEOUT_VALUE);
-//					}
+							PRINTF("Master Buff: %s\r\n", Buffer);
+							if (BufferSize > 0) {
+								Radio.Send("HOLA, ESCLAVO", 13);
+								Radio.Rx( RX_TIMEOUT_VALUE);
+							}
+						} else {
+							if (BufferSize > 0) {
+								PRINTF("Slave buff: %s\r\n", Buffer);
+								Radio.Send("HOLA, MAESTRO", 13);
+								Radio.Rx( RX_TIMEOUT_VALUE);
+							}
+						}
+						Radio.Rx( RX_TIMEOUT_VALUE);
+						State = LOWPOWER;
+						break;
+//			PRINTF("Buff: %s\n", Buffer);
+//			if (isMaster == true) {
+//				PRINTF("SOY EL MASTER\r\n");
+//				if (strncmp((const char*) Buffer, (const char*) "PREST", 5)	== 0) {
+//					PRINTF("Recibido: %s\n", Buffer);
+//					isMaster = false;
+//					PRINTF("ME CONVIERTO A ESCLAVO\r\n");
+//					esclavo = 1;
+//					Delay(1);
+//					Radio.Send( "OK", 2);
+//					Radio.Rx( RX_TIMEOUT_VALUE);
+//				} else {
+//					//isMaster = true;
+//					PRINTF("START AGAIN\r\n");
+//					Radio.Rx( RX_TIMEOUT_VALUE);
 //				}
-			} else {
-				PRINTF("SOY ESCLAVO\r\n");
-				if (BufferSize > 0) {
-					PRINTF("Slave buff: %s\n", Buffer);
-					if (strncmp((const char*) Buffer, (const char*) "PREST", 5)	== 0) {
-						PRINTF("ESCLAVO PREST: %s\r\n", Buffer);
-						Radio.Send("OK", BufferSize);
-						prest = 1;
-						DelayMs(1);
-					} else 	{
-						//isMaster = true;
-						PRINTF("ESCLAVO OK");
-						Radio.Send("OK", BufferSize);
-						DelayMs(1);
-
-					}
-					Radio.Rx( RX_TIMEOUT_VALUE);
-				}
-			}
-			Radio.Rx( RX_TIMEOUT_VALUE);
-			State = LOWPOWER;
-			break;
+////				Radio.Send("OK", BufferSize);
+////				PRINTF("MASTER Y NI PING NI PONG\r\n");
+////				isMaster = true;
+////				Radio.Rx( RX_TIMEOUT_VALUE);
+////				if (BufferSize > 0) {
+////					if (strncmp((const char*) Buffer, (const char*) PongMsg, 4)
+////							== 0) {
+////						TimerStop(&timerLed);
+////						LED_Off(LED_BLUE);
+////						LED_Off(LED_GREEN);
+////						LED_Off(LED_RED1);;
+////						// Indicates on a LED that the received frame is a PONG
+////						LED_Toggle(LED_RED2);
+////
+////						// Send the next PING frame
+////						Buffer[0] = 'P';
+////						Buffer[1] = 'I';
+////						Buffer[2] = 'N';
+////						Buffer[3] = 'G';
+////						// We fill the buffer with numbers for the payload
+////						for (i = 4; i < BufferSize; i++) {
+////							Buffer[i] = i - 4;
+////						}
+////						PRINTF("...PING\n");
+////
+////						DelayMs(1);
+////						Radio.Send(Buffer, BufferSize);
+////					} else if (strncmp((const char*) Buffer,
+////							(const char*) PingMsg, 4) == 0) { // A master already exists then become a slave
+////						isMaster = false;
+////						PRINTF("ME CONVIERTO A ESCLAVO\r\n");
+////						//GpioWrite( &Led2, 1 ); // Set LED off
+////						Radio.Rx( RX_TIMEOUT_VALUE);
+////					} else // valid reception but neither a PING or a PONG message
+////					{    // Set device as master ans start again
+////						isMaster = true;
+////						PRINTF("MASTER Y NI PING NI PONG\r\n");
+////						Radio.Rx( RX_TIMEOUT_VALUE);
+////					}
+////				}
+//			} else {
+//				PRINTF("SOY ESCLAVO\r\n");
+//				if (BufferSize > 0) {
+//					PRINTF("Slave buff: %s\n", Buffer);
+//					if (strncmp((const char*) Buffer, (const char*) "PREST", 5)	== 0) {
+//						PRINTF("ESCLAVO PREST: %s\r\n", Buffer);
+//						Radio.Send("OK", BufferSize);
+//						prest = 1;
+//						DelayMs(1);
+//					} else 	{
+//						//isMaster = true;
+//						PRINTF("ESCLAVO OK");
+//						Radio.Send("OK", BufferSize);
+//						DelayMs(1);
+//
+//					}
+//					Radio.Rx( RX_TIMEOUT_VALUE);
+//				}
+//			}
+//			Radio.Rx( RX_TIMEOUT_VALUE);
+//			State = LOWPOWER;
+//			break;
 		case TX:
 			// Indicates on a LED that we have sent a PING [Master]
 			// Indicates on a LED that we have sent a PONG [Slave]
