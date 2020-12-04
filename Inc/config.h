@@ -2,8 +2,8 @@
 
 #define RADIO_RESET_PORT                          GPIOA
 #define RADIO_RESET_PIN                           GPIO_PIN_0
-/* PINES PARA LA PLACA ST*/
 
+/* PINES PARA LA PLACA ST*/
 
 #define RADIO_MOSI_PORT                           GPIOA
 #define RADIO_MOSI_PIN                            GPIO_PIN_7

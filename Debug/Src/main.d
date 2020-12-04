@@ -32,7 +32,8 @@ Src/main.o: ../Src/main.c ../Inc/includes.h ../Inc/hw_conf.h \
  ../Lora/Utilities/utilities.h ../Lora/Utilities/delay.h \
  ../Lora/Utilities/low_power.h ../Inc/utilities_conf.h \
  ../Lora/Core/lora.h ../Inc/Comissioning.h ../Lora/Mac/LoRaMac.h \
- ../Lora/Mac/region/Region.h ../Inc/vcom.h
+ ../Lora/Mac/region/Region.h ../Lora/Phy/sx1272/sx1272Regs-Fsk.h \
+ ../Inc/vcom.h
 
 ../Inc/includes.h:
 
@@ -117,5 +118,7 @@ Src/main.o: ../Src/main.c ../Inc/includes.h ../Inc/hw_conf.h \
 ../Lora/Mac/LoRaMac.h:
 
 ../Lora/Mac/region/Region.h:
+
+../Lora/Phy/sx1272/sx1272Regs-Fsk.h:
 
 ../Inc/vcom.h:

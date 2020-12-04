@@ -15,42 +15,16 @@ SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
 SPI_HandleTypeDef hspi4;
 
-void SPI_Init(SPI_HandleTypeDef* hspi) {
+
+/*SPI para comunicación con la variscite*/
+/*los pines de la SPI1 (para la eval board) están declarados en hw_spi*/
+void SPI_Init() {
 
 	GPIO_InitTypeDef GPIO_InitStruct;
 
 	/* Peripheral clock enable */
-//	__SPI1_CLK_ENABLE();
-//
-//	/**SPI1 GPIO Configuration
-//	 PA4     ------> SPI1_NSS
-//	 PA5     ------> SPI1_SCK
-//	 PA6     ------> SPI1_MISO
-//	 PA7     ------> SPI1_MOSI
-//	 */
-//	GPIO_InitStruct.Pin = GPIO_PIN_4;
-//	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-//	GPIO_InitStruct.Pull = GPIO_NOPULL;
-//	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-//
-//	GPIO_InitStruct.Pin = GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7;
-//	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-//	GPIO_InitStruct.Pull = GPIO_NOPULL;
-//	GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
-//	GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-//	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-	/* Peripheral clock enable */
 	__SPI2_CLK_ENABLE();
-
-	/**SPI2 GPIO Configuration
-	 PB12     ------> SPI2_NSS
-	 PB13     ------> SPI2_SCK
-	 PB14     ------> SPI2_MISO
-	 PB15     ------> SPI2_MOSI
-	 */
-
-    __HAL_RCC_GPIOB_CLK_ENABLE();
+   // __HAL_RCC_GPIOB_CLK_ENABLE();
     /**SPI2 GPIO Configuration
     PB13     ------> SPI2_SCK
     PB14     ------> SPI2_MISO
@@ -150,30 +124,30 @@ void SPI_DeInit(SPI_HandleTypeDef* hspi) {
 
 }
 
-//void SPI1_Init(void)
-//{
-//
-//  hspi1.Instance = SPI1;
-//  hspi1.Init.Mode = SPI_MODE_MASTER;
-//  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
-//  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
-//  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
-//  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-//  hspi1.Init.NSS = SPI_NSS_HARD_INPUT;
-//  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
-//  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
-//  hspi1.Init.TIMode = SPI_TIMODE_DISABLED;
-//  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLED;
-//  hspi1.Init.CRCPolynomial = 10;
-//  HAL_SPI_Init(&hspi1);
-//
-//}
+void SPI1_Init(void)
+{
+
+  hspi1.Instance = SPI1;
+  hspi1.Init.Mode = SPI_MODE_MASTER;
+  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.NSS = SPI_NSS_HARD_INPUT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi1.Init.TIMode = SPI_TIMODE_DISABLED;
+  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLED;
+  hspi1.Init.CRCPolynomial = 10;
+  HAL_SPI_Init(&hspi1);
+
+}
 
 /* SPI2 init function */
 void SPI2_Init(void) {
 
 	hspi2.Instance = SPI2;
-	hspi2.Init.Mode = SPI_MODE_SLAVE;
+	hspi2.Init.Mode = SPI_MODE_MASTER;
 	hspi2.Init.Direction = SPI_DIRECTION_2LINES;
 	hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
 	hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
@@ -206,14 +180,5 @@ void SPI4_Init(void) {
 	hspi4.Init.CRCPolynomial = 10;
 	HAL_SPI_Init(&hspi4);
 }
-
-//uint16_t SpiInOut( Spi_t *obj, uint16_t outData )
-//{
-//	char buff[50];
-//    /* Send SPIy data */
-//    HAL_SPI_Transmit(&hspi1, outData, sizeof(outData), 1000);
-//    while( HAL_SPI_GetState(&hspi1)  == HAL_SPI_STATE_RESET);
-//    return HAL_SPI_Receive(&hspi1, buff, sizeof(buff), 1000);
-//}
 
 #endif /* SPI_C_ */

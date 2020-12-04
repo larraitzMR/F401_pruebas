@@ -21,12 +21,23 @@ RM := rm -rf
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(strip $(S_DEPS)),)
+-include $(S_DEPS)
+endif
+ifneq ($(strip $(S_UPPER_DEPS)),)
+-include $(S_UPPER_DEPS)
+endif
 ifneq ($(strip $(C_DEPS)),)
 -include $(C_DEPS)
 endif
 endif
 
 -include ../makefile.defs
+
+BUILD_ARTIFACT_NAME := F411
+BUILD_ARTIFACT_EXTENSION := elf
+BUILD_ARTIFACT_PREFIX := 
+BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME).$(BUILD_ARTIFACT_EXTENSION)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
@@ -38,13 +49,19 @@ default.size.stdout \
 OBJDUMP_LIST += \
 F411.list \
 
+OBJCOPY_BIN += \
+F411.bin \
+
 
 # All Target
-all: F411.elf secondary-outputs
+all: main-build
+
+# Main-build Target
+main-build: F411.elf secondary-outputs
 
 # Tool invocations
-F411.elf: $(OBJS) $(USER_OBJS) C:\Users\Propietario\Documents\GitHub\F401_pruebas\STM32F401RETX_FLASH.ld
-	arm-none-eabi-gcc -o "F411.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Propietario\Documents\GitHub\F401_pruebas\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F411.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+F411.elf: $(OBJS) $(USER_OBJS) C:\Users\Larraitz\Documents\GitHub\RDM_STMF411\STM32F401RETX_FLASH.ld
+	arm-none-eabi-gcc -o "F411.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Larraitz\Documents\GitHub\RDM_STMF411\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F411.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -58,14 +75,26 @@ F411.list: $(EXECUTABLES)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+F411.bin: $(EXECUTABLES)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "F411.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
 	-$(RM) *
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
-.PHONY: all clean dependents
+fail-specified-linker-script-missing:
+	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'
+	@exit 2
+
+warn-no-linker-script-specified:
+	@echo 'Warning: No linker script specified. Check the linker settings in the build configuration.'
+
+.PHONY: all clean dependents fail-specified-linker-script-missing warn-no-linker-script-specified
 .SECONDARY:
 
 -include ../makefile.targets
