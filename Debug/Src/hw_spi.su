@@ -1,6 +1,6 @@
 hw_spi.c:62:6:HW_SPI_Init	16	static
-hw_spi.c:100:6:HW_SPI_DeInit	8	static
-hw_spi.c:112:6:HW_SPI_IoInit	32	static
-hw_spi.c:134:6:HW_SPI_IoDeInit	32	static
-hw_spi.c:163:10:HW_SPI_InOut	32	static
-hw_spi.c:173:17:SpiFrequency	32	static
+hw_spi.c:101:6:HW_SPI_DeInit	8	static
+hw_spi.c:113:6:HW_SPI_IoInit	32	static
+hw_spi.c:135:6:HW_SPI_IoDeInit	32	static
+hw_spi.c:164:10:HW_SPI_InOut	32	static
+hw_spi.c:174:17:SpiFrequency	32	static

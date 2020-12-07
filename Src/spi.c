@@ -24,7 +24,7 @@ void SPI_Init() {
 
 	/* Peripheral clock enable */
 	__SPI2_CLK_ENABLE();
-   // __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
     /**SPI2 GPIO Configuration
     PB13     ------> SPI2_SCK
     PB14     ------> SPI2_MISO
@@ -147,7 +147,7 @@ void SPI1_Init(void)
 void SPI2_Init(void) {
 
 	hspi2.Instance = SPI2;
-	hspi2.Init.Mode = SPI_MODE_MASTER;
+	hspi2.Init.Mode = SPI_MODE_SLAVE;
 	hspi2.Init.Direction = SPI_DIRECTION_2LINES;
 	hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
 	hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;

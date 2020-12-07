@@ -6,7 +6,6 @@
 #include "delay.h"
 #include "low_power.h"
 #include "lora.h"
-#include "sx1272/sx1272Regs-Fsk.h"
 
 #include "vcom.h"
 
@@ -26,7 +25,7 @@
 
 #if defined( USE_MODEM_LORA )
 
-#define LORA_BANDWIDTH                              1         // [0: 125 kHz,
+#define LORA_BANDWIDTH                              0         // [0: 125 kHz,
 //  1: 250 kHz,
 //  2: 500 kHz,
 //  3: Reserved]
@@ -61,15 +60,6 @@ typedef enum {
 #define BUFFER_SIZE                                 64 // Define the payload size here
 #define LED_PERIOD_MS               200
 
-#define LEDS_OFF   do{ \
-                   LED_Off( LED_BLUE ) ;   \
-                   LED_Off( LED_RED ) ;    \
-                   LED_Off( LED_GREEN1 ) ; \
-                   LED_Off( LED_GREEN2 ) ; \
-                   } while(0) ;
-
-const uint8_t PingMsg[] = "PING";
-const uint8_t PongMsg[] = "PONG";
 
 uint16_t BufferSize = BUFFER_SIZE;
 uint8_t Buffer[BUFFER_SIZE];
@@ -143,6 +133,7 @@ uint8_t ReadyMsg[] = "PREST";
 int esclavo = 0;
 int prest = 0;
 
+
 int main(void) {
 	//bool isMaster = true;
 
@@ -158,7 +149,6 @@ int main(void) {
 	USART2_UART_Init();
 
 	SPI_Init();
-//	SPI1_Init();
 	SPI2_Init();
 
 	PRINTF("------------- PROGRAMA F411 -------------\r\n");
@@ -183,9 +173,6 @@ int main(void) {
 	LORA_CODINGRATE, 0, LORA_PREAMBLE_LENGTH,
 	LORA_SYMBOL_TIMEOUT, LORA_FIX_LENGTH_PAYLOAD_ON, 0, true, 0, 0,
 	LORA_IQ_INVERSION_ON, true);
-	//Establece la radio en modo de recepción durante un tiempo
-	Radio.Rx( RX_TIMEOUT_VALUE);
-	DelayMs(1);
 
 	bool isMaster = true;
 	if (isMaster) {
@@ -193,6 +180,10 @@ int main(void) {
 	} else {
 		PRINTF("\r\n----------- SOY ESCLAVO -----------\r\n");
 	}
+
+	//Establece la radio en modo de recepción durante un tiempo
+	Radio.Rx( RX_TIMEOUT_VALUE);
+	DelayMs(1);
 
 	while (1) {
 		switch (State) {
@@ -335,7 +326,6 @@ int main(void) {
 //		}
 //		memset(BufferSPI, 0, sizeof(BufferSPI));
 //		PRINTF("i: %d\r\n", i);
-		Radio.Rx( RX_TIMEOUT_VALUE);
 		DISABLE_IRQ();
 		ENABLE_IRQ();
 		DelayMs(1);
