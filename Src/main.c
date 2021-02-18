@@ -60,7 +60,6 @@ typedef enum {
 #define BUFFER_SIZE                                 64 // Define the payload size here
 #define LED_PERIOD_MS               200
 
-
 uint16_t BufferSize = BUFFER_SIZE;
 uint8_t Buffer[BUFFER_SIZE];
 
@@ -133,7 +132,6 @@ uint8_t ReadyMsg[] = "PREST";
 int esclavo = 0;
 int prest = 0;
 
-
 int main(void) {
 	//bool isMaster = true;
 
@@ -159,7 +157,6 @@ int main(void) {
 	RadioEvents.TxTimeout = OnTxTimeout;
 	RadioEvents.RxTimeout = OnRxTimeout;
 	RadioEvents.RxError = OnRxError;
-
 
 	Radio.Init(&RadioEvents);
 	Radio.SetChannel( RF_FREQUENCY);
@@ -230,7 +227,8 @@ int main(void) {
 			break;
 		}
 
-		//
+
+	//
 //
 //	while (1) {
 //
@@ -326,11 +324,12 @@ int main(void) {
 //		}
 //		memset(BufferSPI, 0, sizeof(BufferSPI));
 //		PRINTF("i: %d\r\n", i);
-		DISABLE_IRQ();
-		ENABLE_IRQ();
-		DelayMs(1);
+	DISABLE_IRQ();
+	ENABLE_IRQ();
+	DelayMs(1);
 
 	}
+
 }
 
 void OnTxDone(void) {

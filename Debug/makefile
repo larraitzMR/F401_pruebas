@@ -60,8 +60,8 @@ all: main-build
 main-build: F411.elf secondary-outputs
 
 # Tool invocations
-F411.elf: $(OBJS) $(USER_OBJS) C:\Users\Larraitz\Documents\GitHub\RDM_STMF411\STM32F401RETX_FLASH.ld
-	arm-none-eabi-gcc -o "F411.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Larraitz\Documents\GitHub\RDM_STMF411\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F411.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+F411.elf: $(OBJS) $(USER_OBJS) C:\Users\Larraitz\Documents\GitHub\RDM_STM32F411\STM32F401RETX_FLASH.ld
+	arm-none-eabi-gcc -o "F411.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Larraitz\Documents\GitHub\RDM_STM32F411\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F411.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
