@@ -44,6 +44,7 @@
 #include "sx1272.h"
 #include "timeServer.h"
 #include "vcom.h"
+#include "lora_init.h"
 
 /*
  * Local types definition

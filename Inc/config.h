@@ -5,17 +5,39 @@
 
 /* PINES PARA LA PLACA ST*/
 
-#define RADIO_MOSI_PORT                           GPIOA
-#define RADIO_MOSI_PIN                            GPIO_PIN_7
 
-#define RADIO_MISO_PORT                           GPIOA
-#define RADIO_MISO_PIN                            GPIO_PIN_6
+/* SPI1 */
+//#define RADIO_MOSI_PORT                           GPIOA
+//#define RADIO_MOSI_PIN                            GPIO_PIN_7
+//
+//#define RADIO_MISO_PORT                           GPIOA
+//#define RADIO_MISO_PIN                            GPIO_PIN_6
+//
+//#define RADIO_SCLK_PORT                           GPIOA
+//#define RADIO_SCLK_PIN                            GPIO_PIN_5
+//
+//#define RADIO_NSS_PORT                            GPIOB
+//#define RADIO_NSS_PIN                             GPIO_PIN_6
 
-#define RADIO_SCLK_PORT                           GPIOA
-#define RADIO_SCLK_PIN                            GPIO_PIN_5
+#define RADIO_DIO_0_PORT                          GPIOA
+#define RADIO_DIO_0_PIN                           GPIO_PIN_10
+
+#define RADIO_DIO_1_PORT                          GPIOB
+#define RADIO_DIO_1_PIN                           GPIO_PIN_3
+
+/* SPI2 */
+
+#define RADIO_MOSI_PORT                           GPIOB
+#define RADIO_MOSI_PIN                            GPIO_PIN_15
+
+#define RADIO_MISO_PORT                           GPIOB
+#define RADIO_MISO_PIN                            GPIO_PIN_14
+
+#define RADIO_SCLK_PORT                           GPIOB
+#define RADIO_SCLK_PIN                            GPIO_PIN_13
 
 #define RADIO_NSS_PORT                            GPIOB
-#define RADIO_NSS_PIN                             GPIO_PIN_6
+#define RADIO_NSS_PIN                             GPIO_PIN_1
 
 #define RADIO_DIO_0_PORT                          GPIOA
 #define RADIO_DIO_0_PIN                           GPIO_PIN_10

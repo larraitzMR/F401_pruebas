@@ -34,7 +34,7 @@ Lora/Phy/sx1272/sx1272.o: ../Lora/Phy/sx1272/sx1272.c ../Inc/hw.h \
  ../Inc/debug.h ../Inc/vcom.h ../Lora/Phy/radio.h \
  ../Lora/Phy/sx1272/sx1272.h ../Lora/Phy/sx1272/sx1272Regs-Fsk.h \
  ../Lora/Phy/sx1272/sx1272Regs-LoRa.h ../Lora/Utilities/timeServer.h \
- ../Lora/Utilities/utilities.h ../Inc/vcom.h
+ ../Lora/Utilities/utilities.h ../Inc/vcom.h ../Inc/lora_init.h
 
 ../Inc/hw.h:
 
@@ -127,3 +127,5 @@ Lora/Phy/sx1272/sx1272.o: ../Lora/Phy/sx1272/sx1272.c ../Inc/hw.h \
 ../Lora/Utilities/utilities.h:
 
 ../Inc/vcom.h:
+
+../Inc/lora_init.h:

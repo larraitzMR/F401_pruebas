@@ -188,7 +188,8 @@ typedef void ( DioIrqHandler )( void* context );
     { MODEM_FSK , REG_DIOMAPPING2        , 0x30 },\
     { MODEM_LORA, REG_LR_DETECTOPTIMIZE  , 0x43 },\
     { MODEM_LORA, REG_LR_PAYLOADMAXLENGTH, 0x40 },\
-}                                                 \
+}
+                                            \
 
 /* Freq = channel * FREQ_STEP */
 #define SX_CHANNEL_TO_FREQ( channel, freq )                                                         \

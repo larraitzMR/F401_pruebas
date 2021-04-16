@@ -6,6 +6,7 @@
 #include "delay.h"
 #include "low_power.h"
 #include "lora.h"
+#include "stm32f4xx_hal.h"
 
 #include "vcom.h"
 
@@ -120,7 +121,8 @@ struct datosVariscite {
 struct datosVariscite misDat[15];
 
 extern UART_HandleTypeDef huart2;
-extern SPI_HandleTypeDef hspi2;
+extern SPI_HandleTypeDef hspi;
+
 //uint8_t ReadyMsg[] = "READY";
 uint8_t OKMsg[] = "OK";
 int recibidoReady = 0;
@@ -129,8 +131,36 @@ char info[10];
 int i = 1;
 
 uint8_t ReadyMsg[] = "PREST";
+const uint8_t PingMsg[] = "PING";
+const uint8_t PongMsg[] = "PONG";
+char buff[5];
+
 int esclavo = 0;
 int prest = 0;
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_6, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : PB1 PB6 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_6;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+}
 
 int main(void) {
 	//bool isMaster = true;
@@ -139,93 +169,107 @@ int main(void) {
 
 	SystemClock_Config();
 
-	//DBG_Init();
-	Radio.IoInit();
-	HW_SPI_Init();
-	vcom_Init();
-	UART_Init();
-	USART2_UART_Init();
+//	DBG_Init();
 
-	SPI_Init();
-	SPI2_Init();
+//	MX_GPIO_Init();
+	HW_SPI_Init();
+//	vcom_Init();
+//	UART_Init();
+//	USART2_UART_Init();
+
+//	Radio.IoInit();
+
+
+//	MX_GPIO_Init();
+//	SPI_Init();
+//	SPI2_Init();
 
 	PRINTF("------------- PROGRAMA F411 -------------\r\n");
 
-//   Radio initialization
-	RadioEvents.TxDone = OnTxDone;
-	RadioEvents.RxDone = OnRxDone;
-	RadioEvents.TxTimeout = OnTxTimeout;
-	RadioEvents.RxTimeout = OnRxTimeout;
-	RadioEvents.RxError = OnRxError;
-
-	Radio.Init(&RadioEvents);
-	Radio.SetChannel( RF_FREQUENCY);
-
-	Radio.SetTxConfig(MODEM_LORA, TX_OUTPUT_POWER, 0, LORA_BANDWIDTH,
-	LORA_SPREADING_FACTOR, LORA_CODINGRATE,
-	LORA_PREAMBLE_LENGTH, LORA_FIX_LENGTH_PAYLOAD_ON,
-	true, 0, 0, LORA_IQ_INVERSION_ON, 3000000);
-
-	Radio.SetRxConfig(MODEM_LORA, LORA_BANDWIDTH, LORA_SPREADING_FACTOR,
-	LORA_CODINGRATE, 0, LORA_PREAMBLE_LENGTH,
-	LORA_SYMBOL_TIMEOUT, LORA_FIX_LENGTH_PAYLOAD_ON, 0, true, 0, 0,
-	LORA_IQ_INVERSION_ON, true);
-
-	bool isMaster = true;
-	if (isMaster) {
-		PRINTF("\r\n----------- SOY MASTER  -----------\r\n");
-	} else {
-		PRINTF("\r\n----------- SOY ESCLAVO -----------\r\n");
-	}
-
-	//Establece la radio en modo de recepción durante un tiempo
-	Radio.Rx( RX_TIMEOUT_VALUE);
-	DelayMs(1);
+////   Radio initialization
+//	RadioEvents.TxDone = OnTxDone;
+//	RadioEvents.RxDone = OnRxDone;
+//	RadioEvents.TxTimeout = OnTxTimeout;
+//	RadioEvents.RxTimeout = OnRxTimeout;
+//	RadioEvents.RxError = OnRxError;
+//
+//	Radio.Init(&RadioEvents);
+//	Radio.SetChannel( RF_FREQUENCY);
+//
+//	Radio.SetTxConfig(MODEM_LORA, TX_OUTPUT_POWER, 0, LORA_BANDWIDTH,
+//	LORA_SPREADING_FACTOR, LORA_CODINGRATE,
+//	LORA_PREAMBLE_LENGTH, LORA_FIX_LENGTH_PAYLOAD_ON,
+//	true, 0, 0, LORA_IQ_INVERSION_ON, 3000000);
+//
+//	Radio.SetRxConfig(MODEM_LORA, LORA_BANDWIDTH, LORA_SPREADING_FACTOR,
+//	LORA_CODINGRATE, 0, LORA_PREAMBLE_LENGTH,
+//	LORA_SYMBOL_TIMEOUT, LORA_FIX_LENGTH_PAYLOAD_ON, 0, true, 0, 0,
+//	LORA_IQ_INVERSION_ON, true);
+//
+//	bool isMaster = true;
+//	if (isMaster) {
+//		PRINTF("\r\n------------- SOY MASTER  -------------\r\n");
+//	} else {
+//		PRINTF("\r\n------------- SOY ESCLAVO -------------\r\n");
+//	}
+//
+//	//Establece la radio en modo de recepción durante un tiempo
+//	Radio.Rx( RX_TIMEOUT_VALUE);
+//	DelayMs(1);
 
 	while (1) {
-		switch (State) {
-		case RX:
-			if (isMaster == true) {
-				PRINTF("Master Buff: %s\r\n", Buffer);
-				if (BufferSize > 0) {
-					Radio.Send("HOLA, ESCLAVO", 13);
-					Radio.Rx( RX_TIMEOUT_VALUE);
-				}
-			} else {
-				if (BufferSize > 0) {
-					PRINTF("Slave buff: %s\r\n", Buffer);
-					Radio.Send("HOLA, MAESTRO", 13);
-					Radio.Rx( RX_TIMEOUT_VALUE);
-				}
-			}
-			Radio.Rx( RX_TIMEOUT_VALUE);
-			State = LOWPOWER;
-			break;
-		case TX:
-			// Indicates on a LED that we have sent a PING [Master]
-			// Indicates on a LED that we have sent a PONG [Slave]
-			//GpioWrite( &Led2, GpioRead( &Led2 ) ^ 1 );
-			Radio.Rx( RX_TIMEOUT_VALUE);
-			State = LOWPOWER;
-			break;
-		case RX_TIMEOUT:
-		case RX_ERROR:
-			PRINTF("RX_ERROR\r\n");
-			if (isMaster == true) {
-				Radio.Send("HOLA, ESCLAVO", 13);
-			}
-			Radio.Rx( RX_TIMEOUT_VALUE);
-			State = LOWPOWER;
-			break;
-		case TX_TIMEOUT:
-			Radio.Rx( RX_TIMEOUT_VALUE);
-			State = LOWPOWER;
-			break;
-		case LOWPOWER:
-		default:
-			Radio.Rx( RX_TIMEOUT_VALUE);
-			break;
-		}
+
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
+//		  HAL_SPI_Transmit(&hspi2, (uint8_t*)"READY", 5, 1000);
+		  HAL_SPI_TransmitReceive(&hspi, (uint8_t*)"READY", (uint8_t *)buff, 5, 5000);
+		  while (HAL_SPI_GetState(&hspi) != HAL_SPI_STATE_READY) {
+		  }
+		  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
+
+//		switch (State) {
+//
+//		case RX:
+//			if (isMaster == true) {
+//				PRINTF("Master Buff: %s\r\n", Buffer);
+//				if (BufferSize > 0) {
+//					Radio.Send("HOLA, ESCLAVO", 13);
+//					Radio.Rx( RX_TIMEOUT_VALUE);
+//				}
+//			} else {
+//				if (BufferSize > 0) {
+//					PRINTF("Slave buff: %s\r\n", Buffer);
+//					Radio.Send("HOLA, MAESTRO", 13);
+//					Radio.Rx( RX_TIMEOUT_VALUE);
+//				}
+//			}
+//			Radio.Rx( RX_TIMEOUT_VALUE);
+//			State = LOWPOWER;
+//			break;
+//		case TX:
+//			// Indicates on a LED that we have sent a PING [Master]
+//			// Indicates on a LED that we have sent a PONG [Slave]
+//			//GpioWrite( &Led2, GpioRead( &Led2 ) ^ 1 );
+//			Radio.Rx( RX_TIMEOUT_VALUE);
+//			State = LOWPOWER;
+//			break;
+//		case RX_TIMEOUT:
+//		case RX_ERROR:
+//			PRINTF("RX_ERROR\r\n");
+//			if (isMaster == true) {
+//				Radio.Send("HOLA, ESCLAVO", 13);
+//			}
+//			Radio.Rx( RX_TIMEOUT_VALUE);
+//			State = LOWPOWER;
+//			break;
+//		case TX_TIMEOUT:
+//			Radio.Rx( RX_TIMEOUT_VALUE);
+//			State = LOWPOWER;
+//			break;
+//		case LOWPOWER:
+//		default:
+//			Radio.Rx( RX_TIMEOUT_VALUE);
+//			break;
+//		}
 
 
 	//
@@ -324,13 +368,16 @@ int main(void) {
 //		}
 //		memset(BufferSPI, 0, sizeof(BufferSPI));
 //		PRINTF("i: %d\r\n", i);
-	DISABLE_IRQ();
-	ENABLE_IRQ();
-	DelayMs(1);
+//	DISABLE_IRQ();
+//	ENABLE_IRQ();
+//	DelayMs(1);
 
 	}
 
 }
+
+
+
 
 void OnTxDone(void) {
 	Radio.Sleep();
@@ -399,37 +446,70 @@ static void OnledEvent(void) {
  * @retval None
  */
 void SystemClock_Config(void) {
-	RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
-	RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
+//	RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
+//	RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
+//
+//	/** Configure the main internal regulator output voltage
+//	 */
+//	__HAL_RCC_PWR_CLK_ENABLE();
+//	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+//	/** Initializes the CPU, AHB and APB busses clocks
+//	 */
+//	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+//	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+//	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+//	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+//	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+//	RCC_OscInitStruct.PLL.PLLM = 16;
+//	RCC_OscInitStruct.PLL.PLLN = 336;
+//	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
+//	RCC_OscInitStruct.PLL.PLLQ = 4;
+//	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+//		Error_Handler();
+//	}
+//	/** Initializes the CPU, AHB and APB busses clocks
+//	 */
+//	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+//			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+//	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+//	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+//	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+//	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+//
+//	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
+//		Error_Handler();
+//	}
 
-	/** Configure the main internal regulator output voltage
-	 */
-	__HAL_RCC_PWR_CLK_ENABLE();
-	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-	/** Initializes the CPU, AHB and APB busses clocks
-	 */
-	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-	RCC_OscInitStruct.PLL.PLLM = 16;
-	RCC_OscInitStruct.PLL.PLLN = 336;
-	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
-	RCC_OscInitStruct.PLL.PLLQ = 4;
-	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-		Error_Handler();
-	}
-	/** Initializes the CPU, AHB and APB busses clocks
-	 */
-	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
-			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+	  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+	  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
-		Error_Handler();
-	}
+	  /** Configure the main internal regulator output voltage
+	  */
+	  __HAL_RCC_PWR_CLK_ENABLE();
+	  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+	  /** Initializes the RCC Oscillators according to the specified parameters
+	  * in the RCC_OscInitTypeDef structure.
+	  */
+	  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+	  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+	  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+	  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+	  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+	  {
+	    Error_Handler();
+	  }
+	  /** Initializes the CPU, AHB and APB buses clocks
+	  */
+	  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+	                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+	  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+	  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+	  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+	  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+//	  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+//	  {
+//	    Error_Handler();
+//	  }
+
 }

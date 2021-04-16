@@ -40,8 +40,8 @@ Maintainer: Miguel Luis and Gregory Cristian
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-static SPI_HandleTypeDef hspi;
-static SPI_HandleTypeDef hspi1;
+SPI_HandleTypeDef hspi;
+
 /* Private function prototypes -----------------------------------------------*/
 
 /*!
@@ -65,22 +65,39 @@ void HW_SPI_Init( void )
   /*##-1- Configure the SPI peripheral */
   /* Set the SPI parameters */
 
-  hspi.Instance = SPI1;
+//  hspi.Instance = SPI1;
+//
+//  hspi.Init.BaudRatePrescaler = SpiFrequency( 10000000 );
+// // hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+//  hspi.Init.Direction      = SPI_DIRECTION_2LINES;
+//  hspi.Init.Mode           = SPI_MODE_MASTER;
+//  hspi.Init.CLKPolarity    = SPI_POLARITY_LOW;
+//  hspi.Init.CLKPhase       = SPI_PHASE_1EDGE;
+//  hspi.Init.DataSize       = SPI_DATASIZE_8BIT;
+//  hspi.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+//  hspi.Init.FirstBit       = SPI_FIRSTBIT_MSB;
+//  hspi.Init.NSS            = SPI_NSS_SOFT;
+//  hspi.Init.TIMode         = SPI_TIMODE_DISABLE;
 
-  hspi.Init.BaudRatePrescaler = SpiFrequency( 10000000 );
- // hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
-  hspi.Init.Direction      = SPI_DIRECTION_2LINES;
-  hspi.Init.Mode           = SPI_MODE_MASTER;
-  hspi.Init.CLKPolarity    = SPI_POLARITY_LOW;
-  hspi.Init.CLKPhase       = SPI_PHASE_1EDGE;
-  hspi.Init.DataSize       = SPI_DATASIZE_8BIT;
-  hspi.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi.Init.FirstBit       = SPI_FIRSTBIT_MSB;
-  hspi.Init.NSS            = SPI_NSS_SOFT;
-  hspi.Init.TIMode         = SPI_TIMODE_DISABLE;
+	hspi.Instance = SPI2;
+	hspi.Init.Mode = SPI_MODE_MASTER;
+	hspi.Init.Direction = SPI_DIRECTION_2LINES;
+	hspi.Init.DataSize = SPI_DATASIZE_8BIT;
+	hspi.Init.CLKPolarity = SPI_POLARITY_LOW;
+	hspi.Init.CLKPhase = SPI_PHASE_1EDGE;
+	hspi.Init.NSS = SPI_NSS_SOFT;
+	hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;//SpiFrequency( 10000000 );
+	//  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+	hspi.Init.FirstBit = SPI_FIRSTBIT_MSB;
+	hspi.Init.TIMode = SPI_TIMODE_DISABLE;
+	hspi.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+	hspi.Init.CRCPolynomial = 10;
+	if (HAL_SPI_Init(&hspi) != HAL_OK)
+	{
+	Error_Handler();
+	}
 
-
-  SPI_CLK_ENABLE();
+ // SPI_CLK_ENABLE();
 
 
   if(HAL_SPI_Init( &hspi) != HAL_OK)
@@ -114,9 +131,14 @@ void HW_SPI_IoInit( void )
 {
   GPIO_InitTypeDef initStruct={0};
 
+	/* Peripheral clock enable */
+  __HAL_RCC_SPI2_CLK_ENABLE();
+
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
 
   initStruct.Mode = GPIO_MODE_AF_PP;
-  initStruct.Pull = GPIO_PULLDOWN  ; //GPIO_PULLDOWN
+  initStruct.Pull = GPIO_NOPULL  ; //GPIO_PULLDOWN
   initStruct.Speed = GPIO_SPEED_HIGH;
   initStruct.Alternate= SPI1_AF;
 
@@ -125,11 +147,12 @@ void HW_SPI_IoInit( void )
   HW_GPIO_Init( RADIO_MOSI_PORT, RADIO_MOSI_PIN, &initStruct);
 
   initStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  initStruct.Pull = GPIO_PULLUP	;//GPIO_PULLUP
+  initStruct.Pull = GPIO_NOPULL	;//GPIO_PULLUP
 
   HW_GPIO_Init(  RADIO_NSS_PORT, RADIO_NSS_PIN, &initStruct );
 
   HW_GPIO_Write ( RADIO_NSS_PORT, RADIO_NSS_PIN, 1 );
+
 }
 
 void HW_SPI_IoDeInit( void )
@@ -150,7 +173,7 @@ void HW_SPI_IoDeInit( void )
   HW_GPIO_Init ( RADIO_SCLK_PORT, RADIO_SCLK_PIN, &initStruct );
   HW_GPIO_Write(  RADIO_SCLK_PORT, RADIO_SCLK_PIN, 0 );
 
-  initStruct.Pull =GPIO_PULLUP  ;
+  initStruct.Pull =GPIO_NOPULL  ;
   HW_GPIO_Init ( RADIO_NSS_PORT, RADIO_NSS_PIN , &initStruct );
   HW_GPIO_Write( RADIO_NSS_PORT, RADIO_NSS_PIN , 1 );
 }
