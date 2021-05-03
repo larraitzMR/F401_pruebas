@@ -1,0 +1,129 @@
+Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
+ ../Core/Inc/stm32f4xx_hal_conf.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h \
+ ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
+ ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f411xe.h \
+ ../Drivers/CMSIS/Include/core_cm4.h \
+ ../Drivers/CMSIS/Include/cmsis_version.h \
+ ../Drivers/CMSIS/Include/cmsis_compiler.h \
+ ../Drivers/CMSIS/Include/cmsis_gcc.h \
+ ../Drivers/CMSIS/Include/mpu_armv7.h \
+ ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc_ex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
+ ../Core/Inc/includes.h ../Core/Inc/hw_conf.h ../Core/Inc/config.h \
+ ../Core/Src/../Lora/Phy/radio.h \
+ ../Core/Src/../Lora/Utilities/timeServer.h \
+ ../Core/Src/../Lora/Utilities/utilities.h \
+ ../Core/Src/../Lora/Utilities/delay.h \
+ ../Core/Src/../Lora/Utilities/low_power.h ../Core/Inc/utilities_conf.h \
+ ../Core/Src/../Lora/Core/lora.h ../Core/Inc/Comissioning.h \
+ ../Core/Src/../Lora/Core/../Mac/LoRaMac.h \
+ ../Core/Src/../Lora/Core/../Mac/region/Region.h ../Core/Inc/hw_rtc.h \
+ ../Core/Inc/../Lora/Utilities/utilities.h ../Core/Inc/vcom.h
+
+../Core/Inc/main.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
+
+../Core/Inc/stm32f4xx_hal_conf.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h:
+
+../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
+
+../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f411xe.h:
+
+../Drivers/CMSIS/Include/core_cm4.h:
+
+../Drivers/CMSIS/Include/cmsis_version.h:
+
+../Drivers/CMSIS/Include/cmsis_compiler.h:
+
+../Drivers/CMSIS/Include/cmsis_gcc.h:
+
+../Drivers/CMSIS/Include/mpu_armv7.h:
+
+../Drivers/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc_ex.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio_ex.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_exti.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc_ex.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
+
+../Core/Inc/includes.h:
+
+../Core/Inc/hw_conf.h:
+
+../Core/Inc/config.h:
+
+../Core/Src/../Lora/Phy/radio.h:
+
+../Core/Src/../Lora/Utilities/timeServer.h:
+
+../Core/Src/../Lora/Utilities/utilities.h:
+
+../Core/Src/../Lora/Utilities/delay.h:
+
+../Core/Src/../Lora/Utilities/low_power.h:
+
+../Core/Inc/utilities_conf.h:
+
+../Core/Src/../Lora/Core/lora.h:
+
+../Core/Inc/Comissioning.h:
+
+../Core/Src/../Lora/Core/../Mac/LoRaMac.h:
+
+../Core/Src/../Lora/Core/../Mac/region/Region.h:
+
+../Core/Inc/hw_rtc.h:
+
+../Core/Inc/../Lora/Utilities/utilities.h:
+
+../Core/Inc/vcom.h:

@@ -1,0 +1,10 @@
+lora.c:184:13:PrepareTxFrame	8	static
+lora.c:223:13:SendFrame	32	static
+lora.c:263:6:OnSendEvent	24	static
+lora.c:287:13:OnTxNextPacketTimerEvent	8	static
+lora.c:299:13:McpsConfirm	16	static
+lora.c:336:13:McpsIndication	120	static
+lora.c:518:13:MlmeConfirm	16	static
+lora.c:559:6:lora_Init	32	static
+lora.c:601:6:lora_fsm	32	static
+lora.c:756:15:lora_getDeviceState	4	static

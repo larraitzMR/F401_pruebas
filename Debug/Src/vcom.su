@@ -1,9 +1,0 @@
-vcom.c:72:6:vcom_Init	8	static
-vcom.c:102:6:vcom_DeInit	8	static
-vcom.c:109:6:vcom_Send	160	static,ignoring_inline_asm
-vcom.c:144:6:vcom_Print	24	static,ignoring_inline_asm
-vcom.c:162:6:vcom_Send_Lp	160	static,ignoring_inline_asm
-vcom.c:202:6:HAL_UART_MspInit	24	static
-vcom.c:214:6:vcom_IoInit	40	static
-vcom.c:236:6:vcom_IoDeInit	40	static
-vcom.c:258:6:HAL_UART_MspDeInit	16	static

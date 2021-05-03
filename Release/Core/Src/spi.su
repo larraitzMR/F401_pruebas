@@ -1,0 +1,5 @@
+spi.c:21:6:SPI_Init	48	static
+spi.c:81:6:SPI_DeInit	0	static
+spi.c:144:6:SPI1_Init	0	static
+spi.c:164:6:SPI2_Init	8	static
+spi.c:203:6:SPI4_Init	0	static

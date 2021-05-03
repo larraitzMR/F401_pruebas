@@ -1,0 +1,8 @@
+lora.c:299:13:McpsConfirm	0	static
+lora.c:518:13:MlmeConfirm	0	static
+lora.c:336:13:McpsIndication	48	static
+lora.c:263:6:OnSendEvent	24	static
+lora.c:287:13:OnTxNextPacketTimerEvent	8	static
+lora.c:559:6:lora_Init	16	static
+lora.c:601:6:lora_fsm	48	static
+lora.c:756:15:lora_getDeviceState	0	static

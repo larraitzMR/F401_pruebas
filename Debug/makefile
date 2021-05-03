@@ -8,15 +8,15 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
--include Startup/subdir.mk
--include Src/subdir.mk
--include Lora/Utilities/subdir.mk
--include Lora/Phy/sx1272/subdir.mk
--include Lora/Mac/region/subdir.mk
--include Lora/Mac/subdir.mk
--include Lora/Crypto/subdir.mk
--include Lora/Core/subdir.mk
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
+-include Core/Startup/subdir.mk
+-include Core/Src/subdir.mk
+-include Core/Lora/Utilities/subdir.mk
+-include Core/Lora/Phy/sx1272/subdir.mk
+-include Core/Lora/Mac/region/subdir.mk
+-include Core/Lora/Mac/subdir.mk
+-include Core/Lora/Crypto/subdir.mk
+-include Core/Lora/Core/subdir.mk
 -include subdir.mk
 -include objects.mk
 
@@ -34,34 +34,34 @@ endif
 
 -include ../makefile.defs
 
-BUILD_ARTIFACT_NAME := F411
+BUILD_ARTIFACT_NAME := RDMv6_LoRa
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX := 
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME).$(BUILD_ARTIFACT_EXTENSION)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-F411.elf \
+RDMv6_LoRa.elf \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-F411.list \
+RDMv6_LoRa.list \
 
 OBJCOPY_BIN += \
-F411.bin \
+RDMv6_LoRa.bin \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: F411.elf secondary-outputs
+main-build: RDMv6_LoRa.elf secondary-outputs
 
 # Tool invocations
-F411.elf: $(OBJS) $(USER_OBJS) C:\Users\Larraitz\Documents\GitHub\RDM_STM32F411\STM32F401RETX_FLASH.ld
-	arm-none-eabi-gcc -o "F411.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Larraitz\Documents\GitHub\RDM_STM32F411\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="F411.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+RDMv6_LoRa.elf: $(OBJS) $(USER_OBJS) C:\Users\Larraitz\Desktop\RDMv6_LoRa\STM32F411VCTX_FLASH.ld
+	arm-none-eabi-gcc -o "RDMv6_LoRa.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Larraitz\Desktop\RDMv6_LoRa\STM32F411VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RDMv6_LoRa.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -70,13 +70,13 @@ default.size.stdout: $(EXECUTABLES)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-F411.list: $(EXECUTABLES)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "F411.list"
+RDMv6_LoRa.list: $(EXECUTABLES)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "RDMv6_LoRa.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-F411.bin: $(EXECUTABLES)
-	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "F411.bin"
+RDMv6_LoRa.bin: $(EXECUTABLES)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "RDMv6_LoRa.bin"
 	@echo 'Finished building: $@'
 	@echo ' '
 

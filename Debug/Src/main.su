@@ -1,9 +1,0 @@
-main.c:145:13:MX_GPIO_Init	40	static
-main.c:165:5:main	16	static
-main.c:382:6:OnTxDone	8	static
-main.c:388:6:OnRxDone	24	static
-main.c:400:6:OnTxTimeout	8	static
-main.c:407:6:OnRxTimeout	8	static
-main.c:413:6:OnRxError	8	static
-main.c:419:13:OnledEvent	4	static
-main.c:448:6:SystemClock_Config	88	static
